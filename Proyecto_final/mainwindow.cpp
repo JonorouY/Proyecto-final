@@ -9,59 +9,30 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
-    , gana(false)
+    , lvl(1)
     , pierde(false)
     , misilTimer(new QTimer(this))
     , launchTimer(new QTimer(this))
+    , moveTimer(new QTimer(this)) // Inicializar el nuevo temporizador
     , reductionStep(0.04)
     , tiempoTotal(0)
     , misilCount(0)
     , canLaunch(true)
+    , scene1(new QGraphicsScene(this))
+    , scene2(new QGraphicsScene(this))
+    , x1()
+    , x2()
+    , y1()
+    , y2()
 {
     ui->setupUi(this);
+    setupScene1();
+    setupScene2();
+    loadCurrentScene();
 
-    scene1 = new QGraphicsScene();
-    ui->graphicsView->setScene(scene1);
-
-    // Fondo scene1
-    QImage fondo1("D:/Documents/ProyectoFinal/Imagenes/Fondo.png");
-    QBrush brocha1(fondo1);
-    ui->graphicsView->setBackgroundBrush(brocha1);
-    // Configuramos el fondo
-    scene1->setSceneRect(300, 200, 1, 1);
-    ui->graphicsView->scale(1.2, 1.2);
-
-    // Avion
-    QPixmap avion("D:/Documents/ProyectoFinal/Imagenes/avion.png");
-    fig1 = new QGraphicsPixmapItem();
-    scene1->addItem(fig1);
-    fig1->setPixmap(avion);
-    fig1->setScale(0.5);
-    fig1->setPos(5, 30);
-
-    // Mirilla
-    QPixmap mirilla("D:/Documents/ProyectoFinal/Imagenes/mirilla.png");
-    fig2 = new QGraphicsPixmapItem();
-    scene1->addItem(fig2);
-    fig2->setPixmap(mirilla);
-    fig2->setScale(0.25);
-    fig2->setPos(527, 310);
-
-    // Misil
-    QPixmap misil("D:/Documents/ProyectoFinal/Imagenes/bomba.png");
-    fig3 = new QGraphicsPixmapItem();
-    fig3->setPixmap(misil);
-    fig3->setScale(1.0); // Tamaño inicial del misil
-    fig3->setVisible(false); // El misil no es visible inicialmente
-    scene1->addItem(fig3);
-
-    // Configurar el temporizador del misil
-    connect(misilTimer, &QTimer::timeout, this, &MainWindow::updateMisil);
-    connect(launchTimer, &QTimer::timeout, this, &MainWindow::enableLaunch);
-
-    // Crear scene2
-    scene2 = new QGraphicsScene();
-    // Puedes agregar aquí los elementos de scene2 si es necesario
+    // Conectar el temporizador de movimiento a la nueva función
+    connect(moveTimer, &QTimer::timeout, this, &MainWindow::updatePositions);
+    moveTimer->start(50); // Establecer el intervalo del temporizador (50 ms)
 }
 
 MainWindow::~MainWindow()
@@ -120,7 +91,7 @@ void MainWindow::launchMisil()
     misilTimer->start(50); // Iniciar el temporizador del misil
     misilCount++; // Incrementar el conteo de misiles
     canLaunch = false; // Deshabilitar el lanzamiento de misiles
-    launchTimer->start(5000); // Habilitar el lanzamiento después de 7 segundos
+    launchTimer->start(5000); // Habilitar el lanzamiento después de 5 segundos
 }
 
 void MainWindow::updateMisil()
@@ -138,12 +109,12 @@ void MainWindow::updateMisil()
             return;
         }
 
-        if (fig3->pos() == fig1->pos())
+        if (fig3->collidesWithItem(fig1))
         {
-            gana = true; // Verificar colisión con el avión y establecer gana a true
+            lvl = 2; // Verificar colisión con el avión y establecer gana a true
             misilTimer->stop();
             fig3->setVisible(false);
-            ui->graphicsView->setScene(scene2); // Cambiar a scene2
+            loadCurrentScene(); // Cambiar a scene2
             return;
         }
     }
@@ -171,17 +142,21 @@ void MainWindow::enableLaunch()
     launchTimer->stop();
 }
 
-void MainWindow::resetScene1()
+void MainWindow::updatePositions()
 {
-    scene1->clear();
-    misilCount = 0;
-    pierde = false;
-    gana = false;
+    // Actualizar la posición de fig3
+    fig1->setPos(fig1->pos().x() + 1, fig1->pos().y());
 
+    // Actualizar la posición de obst[0]
+    obst[0]->setPos(obst[0]->pos().x()+1, obst[0]->pos().y());
+}
+
+void MainWindow::setupScene1()
+{
     // Fondo scene1
     QImage fondo1("D:/Documents/ProyectoFinal/Imagenes/Fondo.png");
     QBrush brocha1(fondo1);
-    ui->graphicsView->setBackgroundBrush(brocha1);
+    scene1->setBackgroundBrush(brocha1);
     // Configuramos el fondo
     scene1->setSceneRect(300, 200, 1, 1);
     ui->graphicsView->scale(1.2, 1.2);
@@ -192,7 +167,9 @@ void MainWindow::resetScene1()
     scene1->addItem(fig1);
     fig1->setPixmap(avion);
     fig1->setScale(0.5);
-    fig1->setPos(5, 30);
+    fig1->setPos(5, 35);
+
+    obst.append(scene1->addRect(20, 60, 220, 35, QPen(Qt::black)));
 
     // Mirilla
     QPixmap mirilla("D:/Documents/ProyectoFinal/Imagenes/mirilla.png");
@@ -210,5 +187,40 @@ void MainWindow::resetScene1()
     fig3->setVisible(false); // El misil no es visible inicialmente
     scene1->addItem(fig3);
 
-    ui->graphicsView->setScene(scene1);
+    // Configurar el temporizador del misil
+    connect(misilTimer, &QTimer::timeout, this, &MainWindow::updateMisil);
+    connect(launchTimer, &QTimer::timeout, this, &MainWindow::enableLaunch);
+}
+
+void MainWindow::setupScene2()
+{
+    // Fondo scene2
+    QImage fondo2("D:/Documents/ProyectoFinal/Imagenes/avion.png");
+    QBrush brocha2(fondo2);
+    scene2->setBackgroundBrush(brocha2);
+
+    // Aquí puedes añadir más elementos a scene2
+    QGraphicsTextItem *texto = scene2->addText("¡Felicidades! Has pasado al nivel 2");
+    texto->setPos(100, 100);
+    texto->setDefaultTextColor(Qt::white);
+}
+
+void MainWindow::loadCurrentScene()
+{
+    if (lvl == 1) {
+        ui->graphicsView->setScene(scene1);
+    } else if (lvl == 2) {
+        ui->graphicsView->setScene(scene2);
+    }
+}
+
+void MainWindow::resetScene1()
+{
+    scene1->clear();
+    misilCount = 0;
+    pierde = false;
+    lvl = 1;
+
+    setupScene1();
+    loadCurrentScene();
 }
