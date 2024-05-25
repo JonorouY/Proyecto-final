@@ -39,6 +39,7 @@ private:
     QGraphicsPixmapItem *fig3;
     QTimer *misilTimer;
     QTimer *launchTimer;
+    QTimer *moveTimer;
     double reductionStep;
     int tiempoTotal;
     int misilCount;
@@ -51,9 +52,10 @@ private:
     void loadCurrentScene();
     void resetScene1();
     QGraphicsLineItem *l1, *l2;
-    QList <QGraphicsRectItem*> obst;
-    QTimer *moveTimer;
-    qreal x1,x2,y1,y2;
+    // Variables para movimiento circular
+    double angle; // Ángulo actual
+    double radius; // Radio del círculo
+    QPointF center; // Centro del círculo
 
 
 };

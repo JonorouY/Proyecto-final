@@ -20,10 +20,9 @@ MainWindow::MainWindow(QWidget *parent)
     , canLaunch(true)
     , scene1(new QGraphicsScene(this))
     , scene2(new QGraphicsScene(this))
-    , x1()
-    , x2()
-    , y1()
-    , y2()
+    , angle(0) // Inicializar el ángulo a 0
+    , radius(120) // Establecer el radio del círculo
+    , center(160, 150) // Establecer el centro del círculo
 {
     ui->setupUi(this);
     setupScene1();
@@ -144,11 +143,15 @@ void MainWindow::enableLaunch()
 
 void MainWindow::updatePositions()
 {
-    // Actualizar la posición de fig3
-    fig1->setPos(fig1->pos().x() + 1, fig1->pos().y());
+    // Incrementar el ángulo
+    angle += 0.05; // Ajusta este valor para cambiar la velocidad del movimiento circular
 
-    // Actualizar la posición de obst[0]
-    obst[0]->setPos(obst[0]->pos().x()+1, obst[0]->pos().y());
+    // Calcular la nueva posición en el movimiento circular
+    qreal newX = center.x() + radius * cos(angle);
+    qreal newY = center.y() + radius * sin(angle);
+
+    // Actualizar la posición de fig1
+    fig1->setPos(newX, newY);
 }
 
 void MainWindow::setupScene1()
@@ -168,8 +171,6 @@ void MainWindow::setupScene1()
     fig1->setPixmap(avion);
     fig1->setScale(0.5);
     fig1->setPos(5, 35);
-
-    obst.append(scene1->addRect(20, 60, 220, 35, QPen(Qt::black)));
 
     // Mirilla
     QPixmap mirilla("D:/Documents/ProyectoFinal/Imagenes/mirilla.png");
