@@ -10,17 +10,19 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
-    , lvl(2)
+    , lvl(3)
     , pierde(false)
     , misilTimer(new QTimer(this))
     , launchTimer(new QTimer(this))
-    , moveTimer(new QTimer(this)) // Inicializar el nuevo temporizador
+    , moveTimer(new QTimer(this))
+    , balaTimer(new QTimer(this))
     , reductionStep(0.04)
     , tiempoTotal(0)
     , misilCount(0)
     , canLaunch(true)
     , scene1(new QGraphicsScene(this))
     , scene2(new QGraphicsScene(this))
+    , scene3(new QGraphicsScene(this))
     , angle(0) // Inicializar el ángulo a 0
     , radius(120) // Establecer el radio del círculo
     , center(160, 150) // Establecer el centro del círculo
@@ -28,6 +30,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     setupScene1();
     setupScene2();
+    setupScene3();
     loadCurrentScene();
 
     // Conectar el temporizador de movimiento a la nueva función
@@ -106,7 +109,95 @@ void MainWindow::keyPressEvent(QKeyEvent *w)
             fig15->setPos(newX, newY);
         }
     }
+    if (lvl == 3){
+        // Obtener la posición actual
+        qreal currentX = fig19->pos().x();
+        qreal currentY = fig19->pos().y();
+
+        QPixmap PersonajeW("Imagenes/Personaje_Ar.png");
+        QPixmap PersonajeA("Imagenes/Personaje_Iz.png");
+        QPixmap PersonajeS("Imagenes/Personaje_Ab.png");
+        QPixmap PersonajeD("Imagenes/Perzonaje_De.png");
+
+        // Variables para las nuevas posiciones
+        qreal newX = currentX;
+        qreal newY = currentY;
+
+        // Cambiar las nuevas posiciones según la tecla presionada
+        switch (w->key())
+        {
+        case Qt::Key_W: newY -= 5;
+            fig19->setPixmap(PersonajeW);
+            break;
+        case Qt::Key_S: newY += 5;
+            fig19->setPixmap(PersonajeS);
+            break;
+        case Qt::Key_A: newX -= 5;
+            fig19->setPixmap(PersonajeA);
+            break;
+        case Qt::Key_D: newX += 5;
+            fig19->setPixmap(PersonajeD);
+            break;
+        case Qt::Key_J:
+            if (canLaunch) {
+                launchBala();
+            }
+            return;
+        default: return; // Si no es una de las teclas mencionadas, salir
+        }
+
+        // Verificar si las nuevas posiciones están dentro de los límites
+        if (newX >= 0 && newX <= 1000 && newY >= 0 && newY <= 1000)
+        {
+            fig19->setPos(newX, newY);
+        }
+    }
 }
+void MainWindow::launchBala()
+{
+    if (misilCount >= 6) {
+        pierde = true;
+        resetScene3();
+        return;
+    }
+
+    fig20->setPos(fig19->pos());
+    fig20->setVisible(true);
+
+    QPixmap currentPixmap = fig19->pixmap(); // Obtener el pixmap actual
+    if (currentPixmap.cacheKey() == QPixmap("Imagenes/Personaje_Ar.png").cacheKey()) {
+        balaDirection = QPointF(0, -1); // Arriba
+    } else if (currentPixmap.cacheKey() == QPixmap("Imagenes/Personaje_Iz.png").cacheKey()) {
+        balaDirection = QPointF(-1, 0); // Izquierda
+    } else if (currentPixmap.cacheKey() == QPixmap("Imagenes/Personaje_Ab.png").cacheKey()) {
+        balaDirection = QPointF(0, 1); // Abajo
+    } else if (currentPixmap.cacheKey() == QPixmap("Imagenes/Perzonaje_De.png").cacheKey()) {
+        balaDirection = QPointF(1, 0); // Derecha
+    }
+
+    connect(balaTimer, &QTimer::timeout, this, &MainWindow::updateBala);
+    balaTimer->start(50);
+
+    misilCount++;
+    canLaunch = false;
+    QTimer::singleShot(2000, this, &MainWindow::enableLaunch);
+}
+
+void MainWindow::updateBala()
+{
+    QPointF currentPos = fig20->pos();
+    QPointF newPos = currentPos + 5 * balaDirection;
+
+    if (newPos.x() < 0 || newPos.x() > 1000 || newPos.y() < 0 || newPos.y() > 1000) {
+        fig20->setVisible(false);
+        balaTimer->stop();
+        return;
+    }
+
+    fig20->setPos(newPos);
+}
+
+
 
 void MainWindow::launchMisil()
 {
@@ -146,6 +237,7 @@ void MainWindow::updateMisil()
             lvl = 2; // Verificar colisión con el avión y establecer gana a true
             misilTimer->stop();
             fig3->setVisible(false);
+            canLaunch = true;
             loadCurrentScene(); // Cambiar a scene2
             return;
         }
@@ -319,14 +411,41 @@ void MainWindow::setupScene2()
     // Aquí puedes añadir más elementos a scene2
 
 }
+void MainWindow::setupScene3()
+{
+    // Fondo scene2
+    QImage fondo3("Imagenes/fondo3.png");
+    QBrush brocha1(fondo3);
+    scene3->setBackgroundBrush(brocha1);
+    // Configuramos el fondo
+    //scene3->setSceneRect(300, 200, 1, 1);
+    //ui->graphicsView->scale(1.2, 1.2);
 
+    QPixmap Personaje("Imagenes/Personaje_Ar.png");
+    fig19 = new QGraphicsPixmapItem();
+    scene3->addItem(fig19);
+    fig19->setPixmap(Personaje);
+    fig19->setScale(0.5);
+    fig19->setPos(515, 327);
+
+    //Bala
+    QPixmap bala("Imagenes/bomba.png");
+    fig20 = new QGraphicsPixmapItem();
+    fig20->setPixmap(bala);
+    fig20->setScale(1.0); // Tamaño inicial del misil
+    fig20->setVisible(false); // El misil no es visible inicialmente
+    scene3->addItem(fig20);
+}
 void MainWindow::loadCurrentScene()
 {
     if (lvl == 1) {
         ui->graphicsView->setScene(scene1);
     } else if (lvl == 2) {
         ui->graphicsView->setScene(scene2);
+    }else if (lvl == 3){
+        ui->graphicsView->setScene(scene3);
     }
+
 }
 
 void MainWindow::resetScene1()
@@ -337,5 +456,26 @@ void MainWindow::resetScene1()
     lvl = 1;
 
     setupScene1();
+    loadCurrentScene();
+}
+
+void MainWindow::resetScene2()
+{
+    scene2->clear();
+    pierde = false;
+    lvl = 2;
+
+    setupScene2();
+    loadCurrentScene();
+}
+
+void MainWindow::resetScene3()
+{
+    scene3->clear();
+    misilCount = 0;
+    pierde = false;
+    lvl = 3;
+
+    setupScene3();
     loadCurrentScene();
 }

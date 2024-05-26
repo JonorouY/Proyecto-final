@@ -7,6 +7,7 @@
 #include <QGraphicsPixmapItem>
 #include <QKeyEvent>
 #include <QTimer>
+#include "jugador.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -33,7 +34,9 @@ private slots:
 private:
     Ui::MainWindow *ui;
     QGraphicsScene *scene1;
-    QGraphicsScene *scene2;    QGraphicsPixmapItem *fig1;
+    QGraphicsScene *scene2;
+    QGraphicsScene *scene3;
+    QGraphicsPixmapItem *fig1;
     QGraphicsPixmapItem *fig2;
     QGraphicsPixmapItem *fig3;
     QGraphicsPixmapItem *fig4;
@@ -51,9 +54,12 @@ private:
     QGraphicsPixmapItem *fig16;
     QGraphicsPixmapItem *fig17;
     QGraphicsPixmapItem *fig18;
+    QGraphicsPixmapItem *fig19;
+    QGraphicsPixmapItem *fig20;
     QTimer *misilTimer;
     QTimer *launchTimer;
     QTimer *moveTimer;
+    QTimer *balaTimer;
     double reductionStep;
     int tiempoTotal;
     int misilCount;
@@ -61,16 +67,21 @@ private:
     bool pierde;
     bool canLaunch;
     void launchMisil();
+    void launchBala();
     void setupScene1();
     void setupScene2();
+    void setupScene3();
     void loadCurrentScene();
     void resetScene1();
+    void resetScene2();
+    void resetScene3();
     QGraphicsLineItem *l1, *l2;
     QList<QGraphicsRectItem*> obst;
     // Variables para movimiento circular
     double angle; // Ángulo actual
     double radius; // Radio del círculo
     QPointF center; // Centro del círculo
+    QPointF balaDirection;
     QTimer *jumpTimer;
     bool isJumping;
     qreal initialVelocity;
@@ -83,6 +94,10 @@ private:
 
     void startJump();
     void updateJump();
+    void updateBala();
+
+    //Jugador PP(100,6,50,40);
+
 
 };
 #endif // MAINWINDOW_H
