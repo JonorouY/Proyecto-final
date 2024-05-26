@@ -92,11 +92,11 @@ void MainWindow::keyPressEvent(QKeyEvent *w)
         case Qt::Key_W: newY -= 5; break;
 
         case Qt::Key_A: newX -= 5;
-        fig15->setPixmap(PersonajeCC_Iz);
-        break;
+            fig15->setPixmap(PersonajeCC_Iz);
+            break;
         case Qt::Key_D: newX += 5;
-        fig15->setPixmap(PersonajeCC_De);
-        break;
+            fig15->setPixmap(PersonajeCC_De);
+            break;
         default: return; // Si no es una de las teclas mencionadas, salir
         }
 
