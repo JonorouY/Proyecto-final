@@ -26,6 +26,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         personajes.h personajes.cpp
         jugador.h jugador.cpp
         enemigos.h enemigos.cpp
+        particula.h particula.cpp
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET Proyecto_final APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR

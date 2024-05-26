@@ -5,11 +5,12 @@
 #include <QGraphicsPixmapItem>
 #include <QKeyEvent>
 #include <QDebug>
+#include <QList>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
-    , lvl(1)
+    , lvl(2)
     , pierde(false)
     , misilTimer(new QTimer(this))
     , launchTimer(new QTimer(this))
@@ -41,37 +42,69 @@ MainWindow::~MainWindow()
 
 void MainWindow::keyPressEvent(QKeyEvent *w)
 {
-    // Obtener la posición actual
-    qreal currentX = fig2->pos().x();
-    qreal currentY = fig2->pos().y();
+    if(lvl==1){
+        // Obtener la posición actual
+        qreal currentX = fig2->pos().x();
+        qreal currentY = fig2->pos().y();
 
-    // Variables para las nuevas posiciones
-    qreal newX = currentX;
-    qreal newY = currentY;
+        // Variables para las nuevas posiciones
+        qreal newX = currentX;
+        qreal newY = currentY;
 
-    // Cambiar las nuevas posiciones según la tecla presionada
-    switch (w->key())
-    {
-    case Qt::Key_W: newY -= 5; break;
-    case Qt::Key_S: newY += 5; break;
-    case Qt::Key_A: newX -= 5; break;
-    case Qt::Key_D: newX += 5; break;
-    case Qt::Key_E: newX += 5; newY -= 5; break;
-    case Qt::Key_Q: newX -= 5; newY -= 5; break;
-    case Qt::Key_Z: newX -= 5; newY += 5; break;
-    case Qt::Key_C: newX += 5; newY += 5; break;
-    case Qt::Key_J:
-        if (canLaunch) {
-            launchMisil();
+        // Cambiar las nuevas posiciones según la tecla presionada
+        switch (w->key())
+        {
+        case Qt::Key_W: newY -= 5; break;
+        case Qt::Key_S: newY += 5; break;
+        case Qt::Key_A: newX -= 5; break;
+        case Qt::Key_D: newX += 5; break;
+        case Qt::Key_E: newX += 5; newY -= 5; break;
+        case Qt::Key_Q: newX -= 5; newY -= 5; break;
+        case Qt::Key_Z: newX -= 5; newY += 5; break;
+        case Qt::Key_C: newX += 5; newY += 5; break;
+        case Qt::Key_J:
+            if (canLaunch) {
+                launchMisil();
+            }
+            return;
+        default: return; // Si no es una de las teclas mencionadas, salir
         }
-        return;
-    default: return; // Si no es una de las teclas mencionadas, salir
-    }
 
-    // Verificar si las nuevas posiciones están dentro de los límites
-    if (newX >= 9 && newX <= 527 && newY >= 25 && newY <= 310)
-    {
-        fig2->setPos(newX, newY);
+        // Verificar si las nuevas posiciones están dentro de los límites
+        if (newX >= 9 && newX <= 527 && newY >= 25 && newY <= 310)
+        {
+            fig2->setPos(newX, newY);
+        }
+    }
+    if (lvl==2){
+        qreal currentX = fig15->pos().x();
+        qreal currentY = fig15->pos().y();
+        QPixmap PersonajeCC_De("Imagenes/PersonajeCC.png");
+        QPixmap PersonajeCC_Iz("Imagenes/PersonajeCC_in.png");
+
+        // Variables para las nuevas posiciones
+        qreal newX = currentX;
+        qreal newY = currentY;
+
+        // Cambiar las nuevas posiciones según la tecla presionada
+        switch (w->key())
+        {
+        case Qt::Key_W: newY -= 5; break;
+
+        case Qt::Key_A: newX -= 5;
+        fig15->setPixmap(PersonajeCC_Iz);
+        break;
+        case Qt::Key_D: newX += 5;
+        fig15->setPixmap(PersonajeCC_De);
+        break;
+        default: return; // Si no es una de las teclas mencionadas, salir
+        }
+
+        // Verificar si las nuevas posiciones están dentro de los límites
+        if (newX >= -10 && newX <= 562 && newY >= 40 && newY <= 1000)
+        {
+            fig15->setPos(newX, newY);
+        }
     }
 }
 
@@ -157,7 +190,7 @@ void MainWindow::updatePositions()
 void MainWindow::setupScene1()
 {
     // Fondo scene1
-    QImage fondo1("D:/Documents/ProyectoFinal/Imagenes/Fondo.png");
+    QImage fondo1("Imagenes/Fondo.png");
     QBrush brocha1(fondo1);
     scene1->setBackgroundBrush(brocha1);
     // Configuramos el fondo
@@ -165,7 +198,7 @@ void MainWindow::setupScene1()
     ui->graphicsView->scale(1.2, 1.2);
 
     // Avion
-    QPixmap avion("D:/Documents/ProyectoFinal/Imagenes/avion.png");
+    QPixmap avion("Imagenes/avion.png");
     fig1 = new QGraphicsPixmapItem();
     scene1->addItem(fig1);
     fig1->setPixmap(avion);
@@ -173,7 +206,7 @@ void MainWindow::setupScene1()
     fig1->setPos(5, 35);
 
     // Mirilla
-    QPixmap mirilla("D:/Documents/ProyectoFinal/Imagenes/mirilla.png");
+    QPixmap mirilla("Imagenes/mirilla.png");
     fig2 = new QGraphicsPixmapItem();
     scene1->addItem(fig2);
     fig2->setPixmap(mirilla);
@@ -181,7 +214,7 @@ void MainWindow::setupScene1()
     fig2->setPos(527, 310);
 
     // Misil
-    QPixmap misil("D:/Documents/ProyectoFinal/Imagenes/bomba.png");
+    QPixmap misil("Imagenes/bomba.png");
     fig3 = new QGraphicsPixmapItem();
     fig3->setPixmap(misil);
     fig3->setScale(1.0); // Tamaño inicial del misil
@@ -195,15 +228,96 @@ void MainWindow::setupScene1()
 
 void MainWindow::setupScene2()
 {
+
     // Fondo scene2
-    QImage fondo2("D:/Documents/ProyectoFinal/Imagenes/avion.png");
+    QImage fondo2("Imagenes/fondo2.jpeg");
     QBrush brocha2(fondo2);
     scene2->setBackgroundBrush(brocha2);
+    scene2->setSceneRect(282, 220, 1, 1);
+
+
+    QPixmap Plataforma1("Imagenes/Obs4.png");
+    fig4 = new QGraphicsPixmapItem();
+    scene2->addItem(fig4);
+    fig4->setPixmap(Plataforma1);
+    fig4->setScale(0.3);
+    fig4->setPos(-50, 310);
+
+    QPixmap Plataforma2("Imagenes/Obs1.png");
+    fig5 = new QGraphicsPixmapItem();
+    scene2->addItem(fig5);
+    fig5->setPixmap(Plataforma2);
+    fig5->setScale(0.15);
+    fig5->setPos(70, 255);
+
+    QPixmap Plataforma3("Imagenes/Obs2.png");
+    fig6 = new QGraphicsPixmapItem();
+    scene2->addItem(fig6);
+    fig6->setPixmap(Plataforma3);
+    fig6->setScale(0.2);
+    fig6->setPos(260, 345);
+
+
+    QPixmap Plataforma5("Imagenes/Obs3.png");
+    fig8 = new QGraphicsPixmapItem();
+    scene2->addItem(fig8);
+    fig8->setPixmap(Plataforma5);
+    fig8->setScale(0.30);
+    fig8->setPos(450, 320);
+
+
+    fig9 = new QGraphicsPixmapItem();
+    scene2->addItem(fig9);
+    fig9->setPixmap(Plataforma3);
+    fig9->setScale(0.18);
+    fig9->setPos(170, 210);
+
+    fig10 = new QGraphicsPixmapItem();
+    scene2->addItem(fig10);
+    fig10->setPixmap(Plataforma3);
+    fig10->setScale(0.18);
+    fig10->setPos(310, 210);
+
+
+    fig11 = new QGraphicsPixmapItem();
+    scene2->addItem(fig11);
+    fig11->setPixmap(Plataforma5);
+    fig11->setScale(0.2);
+    fig11->setPos(470, 180);
+
+
+    QPixmap Plataforma9("Imagenes/Obs3In.png");
+    fig12 = new QGraphicsPixmapItem();
+    scene2->addItem(fig12);
+    fig12->setPixmap(Plataforma9);
+    fig12->setScale(0.18);
+    fig12->setPos(235, 82);
+
+
+    fig14 = new QGraphicsPixmapItem();
+    scene2->addItem(fig14);
+    fig14->setPixmap(Plataforma2);
+    fig14->setScale(0.15);
+    fig14->setPos(370, 130);
+
+    QPixmap flecha("Imagenes/flecha.png");
+    fig13 = new QGraphicsPixmapItem();
+    scene2->addItem(fig13);
+    fig13->setPixmap(flecha);
+    fig13->setScale(0.25);
+    fig13->setPos(480, 205);
+
+    QPixmap Personaje("Imagenes/Personaje.png");
+    fig15 = new QGraphicsPixmapItem();
+    scene2->addItem(fig15);
+    fig15->setPixmap(Personaje);
+    fig15->setScale(0.5);
+    fig15->setPos(515, 327);
+
+
 
     // Aquí puedes añadir más elementos a scene2
-    QGraphicsTextItem *texto = scene2->addText("¡Felicidades! Has pasado al nivel 2");
-    texto->setPos(100, 100);
-    texto->setDefaultTextColor(Qt::white);
+
 }
 
 void MainWindow::loadCurrentScene()

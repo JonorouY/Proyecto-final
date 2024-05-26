@@ -33,10 +33,24 @@ private slots:
 private:
     Ui::MainWindow *ui;
     QGraphicsScene *scene1;
-    QGraphicsScene *scene2;
-    QGraphicsPixmapItem *fig1;
+    QGraphicsScene *scene2;    QGraphicsPixmapItem *fig1;
     QGraphicsPixmapItem *fig2;
     QGraphicsPixmapItem *fig3;
+    QGraphicsPixmapItem *fig4;
+    QGraphicsPixmapItem *fig5;
+    QGraphicsPixmapItem *fig6;
+    QGraphicsPixmapItem *fig7;
+    QGraphicsPixmapItem *fig8;
+    QGraphicsPixmapItem *fig9;
+    QGraphicsPixmapItem *fig10;
+    QGraphicsPixmapItem *fig11;
+    QGraphicsPixmapItem *fig12;
+    QGraphicsPixmapItem *fig13;
+    QGraphicsPixmapItem *fig14;
+    QGraphicsPixmapItem *fig15;
+    QGraphicsPixmapItem *fig16;
+    QGraphicsPixmapItem *fig17;
+    QGraphicsPixmapItem *fig18;
     QTimer *misilTimer;
     QTimer *launchTimer;
     QTimer *moveTimer;
@@ -52,11 +66,23 @@ private:
     void loadCurrentScene();
     void resetScene1();
     QGraphicsLineItem *l1, *l2;
+    QList<QGraphicsRectItem*> obst;
     // Variables para movimiento circular
     double angle; // Ángulo actual
     double radius; // Radio del círculo
     QPointF center; // Centro del círculo
+    QTimer *jumpTimer;
+    bool isJumping;
+    qreal initialVelocity;
+    qreal gravity;
+    qreal jumpTime;
+    qreal startX;
+    qreal startY;
+    qreal velocityX;
+    qreal velocityY;
 
+    void startJump();
+    void updateJump();
 
 };
 #endif // MAINWINDOW_H
