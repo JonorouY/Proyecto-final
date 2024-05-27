@@ -26,6 +26,8 @@ MainWindow::MainWindow(QWidget *parent)
     , angle(0) // Inicializar el ángulo a 0
     , radius(120) // Establecer el radio del círculo
     , center(160, 150) // Establecer el centro del círculo
+    , PP(100,6,50,50)
+    , balaEnMovimiento(false)
 {
     ui->setupUi(this);
     setupScene1();
@@ -147,7 +149,7 @@ void MainWindow::keyPressEvent(QKeyEvent *w)
         }
 
         // Verificar si las nuevas posiciones están dentro de los límites
-        if (newX >= 0 && newX <= 1000 && newY >= 0 && newY <= 1000)
+        if (newX >= 58 && newX <= 500 && newY >= 55 && newY <= 303)
         {
             fig19->setPos(newX, newY);
         }
@@ -155,49 +157,56 @@ void MainWindow::keyPressEvent(QKeyEvent *w)
 }
 void MainWindow::launchBala()
 {
-    if (misilCount >= 6) {
-        pierde = true;
-        resetScene3();
+    if (PP.getMunicion() == 0) {
         return;
     }
 
-    fig20->setPos(fig19->pos());
-    fig20->setVisible(true);
+    QPixmap currentPixmap = fig19->pixmap();
+    QPointF initialPos = fig19->pos();
 
-    QPixmap currentPixmap = fig19->pixmap(); // Obtener el pixmap actual
+    // Determinar la dirección de la bala basándonos en la imagen actual del personaje
     if (currentPixmap.cacheKey() == QPixmap("Imagenes/Personaje_Ar.png").cacheKey()) {
         balaDirection = QPointF(0, -1); // Arriba
+        initialPos += QPointF(28, 0); // +10 en X
     } else if (currentPixmap.cacheKey() == QPixmap("Imagenes/Personaje_Iz.png").cacheKey()) {
         balaDirection = QPointF(-1, 0); // Izquierda
+        initialPos += QPointF(-1, 8); // +2 en X
     } else if (currentPixmap.cacheKey() == QPixmap("Imagenes/Personaje_Ab.png").cacheKey()) {
         balaDirection = QPointF(0, 1); // Abajo
+        initialPos += QPointF(8, 43); // +3 en X y +8 en Y
     } else if (currentPixmap.cacheKey() == QPixmap("Imagenes/Perzonaje_De.png").cacheKey()) {
         balaDirection = QPointF(1, 0); // Derecha
+        initialPos += QPointF(44, 28); // +10 en X y +8 en Y
     }
 
+    fig20->setPos(initialPos);
+    fig20->setVisible(true);
+
+    // Configurar el temporizador para mover la bala
+    disconnect(balaTimer, &QTimer::timeout, this, &MainWindow::updateBala);
     connect(balaTimer, &QTimer::timeout, this, &MainWindow::updateBala);
     balaTimer->start(50);
 
-    misilCount++;
+    // Reducir la munición y deshabilitar el lanzamiento temporalmente
+    PP.setMunicion(PP.getMunicion() - 1);
     canLaunch = false;
+    balaEnMovimiento = true;
     QTimer::singleShot(2000, this, &MainWindow::enableLaunch);
 }
-
 void MainWindow::updateBala()
 {
     QPointF currentPos = fig20->pos();
-    QPointF newPos = currentPos + 5 * balaDirection;
+    QPointF newPos = currentPos + 20 * balaDirection; // Mantener la velocidad constante
 
     if (newPos.x() < 0 || newPos.x() > 1000 || newPos.y() < 0 || newPos.y() > 1000) {
         fig20->setVisible(false);
         balaTimer->stop();
+        balaEnMovimiento = false;
         return;
     }
 
     fig20->setPos(newPos);
 }
-
-
 
 void MainWindow::launchMisil()
 {
@@ -263,8 +272,10 @@ void MainWindow::updateMisil()
 void MainWindow::enableLaunch()
 {
     canLaunch = true;
+    balaEnMovimiento = false;
     launchTimer->stop();
 }
+
 
 void MainWindow::updatePositions()
 {
@@ -417,22 +428,22 @@ void MainWindow::setupScene3()
     QImage fondo3("Imagenes/fondo3.png");
     QBrush brocha1(fondo3);
     scene3->setBackgroundBrush(brocha1);
-    // Configuramos el fondo
-    //scene3->setSceneRect(300, 200, 1, 1);
-    //ui->graphicsView->scale(1.2, 1.2);
+    //Configuramos el fondo
+    scene3->setSceneRect(300, 200, 1, 1);
+    ui->graphicsView->scale(1.2, 1.2);
 
     QPixmap Personaje("Imagenes/Personaje_Ar.png");
     fig19 = new QGraphicsPixmapItem();
     scene3->addItem(fig19);
     fig19->setPixmap(Personaje);
-    fig19->setScale(0.5);
-    fig19->setPos(515, 327);
+    fig19->setScale(0.2);
+    fig19->setPos(300, 300);
 
     //Bala
-    QPixmap bala("Imagenes/bomba.png");
+    QPixmap bala("Imagenes/bala.png");
     fig20 = new QGraphicsPixmapItem();
     fig20->setPixmap(bala);
-    fig20->setScale(1.0); // Tamaño inicial del misil
+    fig20->setScale(0.01); // Tamaño inicial del misil
     fig20->setVisible(false); // El misil no es visible inicialmente
     scene3->addItem(fig20);
 }

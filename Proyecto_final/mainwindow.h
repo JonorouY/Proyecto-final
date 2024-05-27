@@ -30,6 +30,9 @@ private slots:
     void updateMisil();
     void enableLaunch();
     void updatePositions();
+    void spawnEnemies();
+    void shootEnemigoBullets();
+    void removeEnemies();
 
 private:
     Ui::MainWindow *ui;
@@ -84,6 +87,7 @@ private:
     QPointF balaDirection;
     QTimer *jumpTimer;
     bool isJumping;
+    bool balaEnMovimiento;
     qreal initialVelocity;
     qreal gravity;
     qreal jumpTime;
@@ -96,8 +100,7 @@ private:
     void updateJump();
     void updateBala();
 
-    //Jugador PP(100,6,50,40);
-
+    Jugador PP;
 
 };
 #endif // MAINWINDOW_H
