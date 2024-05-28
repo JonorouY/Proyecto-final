@@ -10,7 +10,7 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
-    , lvl(3)
+    , lvl(2)
     , pierde(false)
     , misilTimer(new QTimer(this))
     , launchTimer(new QTimer(this))
@@ -84,8 +84,8 @@ void MainWindow::keyPressEvent(QKeyEvent *w)
     if (lvl==2){
         qreal currentX = fig15->pos().x();
         qreal currentY = fig15->pos().y();
-        QPixmap PersonajeCC_De("Imagenes/PersonajeCC.png");
-        QPixmap PersonajeCC_Iz("Imagenes/PersonajeCC_in.png");
+        QPixmap PersonajeCC_De(":/Imagenes/PersonajeCC.png");
+        QPixmap PersonajeCC_Iz(":/Imagenes/PersonajeCC_in.png");
 
         // Variables para las nuevas posiciones
         qreal newX = currentX;
@@ -116,10 +116,10 @@ void MainWindow::keyPressEvent(QKeyEvent *w)
         qreal currentX = fig19->pos().x();
         qreal currentY = fig19->pos().y();
 
-        QPixmap PersonajeW("Imagenes/Personaje_Ar.png");
-        QPixmap PersonajeA("Imagenes/Personaje_Iz.png");
-        QPixmap PersonajeS("Imagenes/Personaje_Ab.png");
-        QPixmap PersonajeD("Imagenes/Perzonaje_De.png");
+        QPixmap PersonajeW(":/Imagenes/Personaje_Ar.png");
+        QPixmap PersonajeA(":/Imagenes/Personaje_Iz.png");
+        QPixmap PersonajeS(":/Imagenes/Personaje_Ab.png");
+        QPixmap PersonajeD(":/Imagenes/Perzonaje_De.png");
 
         // Variables para las nuevas posiciones
         qreal newX = currentX;
@@ -165,16 +165,16 @@ void MainWindow::launchBala()
     QPointF initialPos = fig19->pos();
 
     // Determinar la dirección de la bala basándonos en la imagen actual del personaje
-    if (currentPixmap.cacheKey() == QPixmap("Imagenes/Personaje_Ar.png").cacheKey()) {
+    if (currentPixmap.cacheKey() == QPixmap(":/Imagenes/Personaje_Ar.png").cacheKey()) {
         balaDirection = QPointF(0, -1); // Arriba
         initialPos += QPointF(28, 0); // +10 en X
-    } else if (currentPixmap.cacheKey() == QPixmap("Imagenes/Personaje_Iz.png").cacheKey()) {
+    } else if (currentPixmap.cacheKey() == QPixmap(":/Imagenes/Personaje_Iz.png").cacheKey()) {
         balaDirection = QPointF(-1, 0); // Izquierda
         initialPos += QPointF(-1, 8); // +2 en X
-    } else if (currentPixmap.cacheKey() == QPixmap("Imagenes/Personaje_Ab.png").cacheKey()) {
+    } else if (currentPixmap.cacheKey() == QPixmap(":/Imagenes/Personaje_Ab.png").cacheKey()) {
         balaDirection = QPointF(0, 1); // Abajo
         initialPos += QPointF(8, 43); // +3 en X y +8 en Y
-    } else if (currentPixmap.cacheKey() == QPixmap("Imagenes/Perzonaje_De.png").cacheKey()) {
+    } else if (currentPixmap.cacheKey() == QPixmap(":/Imagenes/Perzonaje_De.png").cacheKey()) {
         balaDirection = QPointF(1, 0); // Derecha
         initialPos += QPointF(44, 28); // +10 en X y +8 en Y
     }
@@ -425,14 +425,14 @@ void MainWindow::setupScene2()
 void MainWindow::setupScene3()
 {
     // Fondo scene2
-    QImage fondo3("Imagenes/fondo3.png");
+    QImage fondo3(":/Imagenes/fondo3.png");
     QBrush brocha1(fondo3);
     scene3->setBackgroundBrush(brocha1);
     //Configuramos el fondo
     scene3->setSceneRect(300, 200, 1, 1);
-    ui->graphicsView->scale(1.2, 1.2);
 
-    QPixmap Personaje("Imagenes/Personaje_Ar.png");
+
+    QPixmap Personaje(":/Imagenes/Personaje_Ar.png");
     fig19 = new QGraphicsPixmapItem();
     scene3->addItem(fig19);
     fig19->setPixmap(Personaje);
@@ -440,7 +440,7 @@ void MainWindow::setupScene3()
     fig19->setPos(300, 300);
 
     //Bala
-    QPixmap bala("Imagenes/bala.png");
+    QPixmap bala(":/Imagenes/bala.png");
     fig20 = new QGraphicsPixmapItem();
     fig20->setPixmap(bala);
     fig20->setScale(0.01); // Tamaño inicial del misil
