@@ -1,0 +1,32 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Imagenes/avion.png</file>
+        <file>Imagenes/bala.png</file>
+        <file>Imagenes/balaEn.png</file>
+        <file>Imagenes/bomba.png</file>
+        <file>Imagenes/Enemigo_Ab.png</file>
+        <file>Imagenes/Enemigo_Ar.png</file>
+        <file>Imagenes/Enemigo_De.png</file>
+        <file>Imagenes/Enemigo_Iz.png</file>
+        <file>Imagenes/flecha.png</file>
+        <file>Imagenes/Fondo.png</file>
+        <file>Imagenes/fondo2.jpeg</file>
+        <file>Imagenes/fondo3.png</file>
+        <file>Imagenes/mirilla.png</file>
+        <file>Imagenes/Muro.png</file>
+        <file>Imagenes/Obs1.png</file>
+        <file>Imagenes/Obs2.png</file>
+        <file>Imagenes/Obs3.png</file>
+        <file>Imagenes/Obs3In.png</file>
+        <file>Imagenes/Obs4.png</file>
+        <file>Imagenes/Personaje.png</file>
+        <file>Imagenes/Personaje_Ab.png</file>
+        <file>Imagenes/Personaje_Ar.png</file>
+        <file>Imagenes/Personaje_Iz.png</file>
+        <file>Imagenes/PersonajeC.png</file>
+        <file>Imagenes/PersonajeC_in.png</file>
+        <file>Imagenes/PersonajeCC.png</file>
+        <file>Imagenes/PersonajeCC_in.png</file>
+        <file>Imagenes/Perzonaje_De.png</file>
+    </qresource>
+</RCC>
