@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
+#include "personajemov.h"
 #include <QTimer>
 #include <QGraphicsScene>
 #include <QGraphicsPixmapItem>
@@ -10,7 +11,7 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
-    , lvl(3) //Se puede escoger el nivel cambiando éste valor 1,2 o 3
+    , lvl(2) //Se puede escoger el nivel cambiando éste valor 1,2 o 3
     , pierde(false)
     , misilTimer(new QTimer(this))
     , launchTimer(new QTimer(this))
@@ -81,36 +82,8 @@ void MainWindow::keyPressEvent(QKeyEvent *w)
             fig2->setPos(newX, newY);
         }
     }
-    if (lvl==2){
-        qreal currentX = fig15->pos().x();
-        qreal currentY = fig15->pos().y();
-        QPixmap PersonajeCC_De(":/Imagenes/PersonajeCC.png");
-        QPixmap PersonajeCC_Iz(":/Imagenes/PersonajeCC_in.png");
 
-        // Variables para las nuevas posiciones
-        qreal newX = currentX;
-        qreal newY = currentY;
 
-        // Cambiar las nuevas posiciones según la tecla presionada
-        switch (w->key())
-        {
-        case Qt::Key_W: newY -= 5; break;
-
-        case Qt::Key_A: newX -= 5;
-            fig15->setPixmap(PersonajeCC_Iz);
-            break;
-        case Qt::Key_D: newX += 5;
-            fig15->setPixmap(PersonajeCC_De);
-            break;
-        default: return; // Si no es una de las teclas mencionadas, salir
-        }
-
-        // Verificar si las nuevas posiciones están dentro de los límites
-        if (newX >= -10 && newX <= 562 && newY >= 40 && newY <= 1000)
-        {
-            fig15->setPos(newX, newY);
-        }
-    }
     if (lvl == 3){
         // Obtener la posición actual
         qreal currentX = fig19->pos().x();
@@ -449,19 +422,22 @@ void MainWindow::setupScene2()
     fig14->setScale(0.15);
     fig14->setPos(370, 130);
 
-    QPixmap flecha(":/Imagenes/flecha.png");
+    QPixmap meta(":/Imagenes/bala.png");
     fig13 = new QGraphicsPixmapItem();
     scene2->addItem(fig13);
-    fig13->setPixmap(flecha);
-    fig13->setScale(0.25);
-    fig13->setPos(480, 205);
+    fig13->setPixmap(meta);
+    fig13->setScale(0.05);
+    fig13->setPos(273, 70);
 
-    QPixmap Personaje(":/Imagenes/Personaje.png");
-    fig15 = new QGraphicsPixmapItem();
-    scene2->addItem(fig15);
-    fig15->setPixmap(Personaje);
-    fig15->setScale(0.5);
-    fig15->setPos(515, 327);
+    fig13->setVisible(false);
+
+
+    PersonajeMov *jug1 = new PersonajeMov(ui->graphicsView,35,45*(3.1415/180));
+    scene2 -> addItem(jug1);
+    jug1->setPos(520,327);
+    jug1->setScale(0.5);
+    jug1->setFlag(QGraphicsItem::ItemIsFocusable);
+    jug1->setFocus();
 
 }
 void MainWindow::setupScene3()

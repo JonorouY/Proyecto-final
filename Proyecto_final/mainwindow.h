@@ -8,6 +8,7 @@
 #include <QKeyEvent>
 #include <QTimer>
 #include "jugador.h"
+#include "personajemov.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {

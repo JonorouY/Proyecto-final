@@ -1,23 +1,59 @@
 #ifndef PERSONAJEMOV_H
 #define PERSONAJEMOV_H
+
+#include <QObject>
+#include <QGraphicsPixmapItem>
 #include <QGraphicsItem>
 #include <QGraphicsView>
+#include <QTimer>
+#include <QElapsedTimer>
 
-
-class Qtimer;
-class PersonajeMov: public QGraphicsItem
+class PersonajeMov: public QObject, public QGraphicsPixmapItem
 {
-public:
-    PersonajeMov(QGraphicsView *view, float velIn, qreal xIn, qreal yIn, float theta);
-    void moveDy(int dx, int dy);
-    void movParabolico(float *dy);
+    Q_OBJECT
 private:
-
-    qreal posX;
-    qreal posY;
+    qreal x = 520;
+    qreal y = 327;
+    const int maxInterval = 200;
     QSize viewRect;
-    float velIn, theta,dir;
-    Qtimer *timer;
+
+    bool flag = true;
+    int cont = 0;
+    int spriteX = 0;
+    int spriteY = 120;
+    int spriteWidth = 40;
+    int spriteHeight = 20;
+    QPixmap sprite;
+    QPixmap spriteSheet;
+    QTimer *timer;
+    QTimer *timer1;
+    QSet<int> keysPressed;
+    float velIn, theta, dir;
     qreal xIn, yIn;
+
+    float tiempoTrans;
+
+    QElapsedTimer TiempoA;
+    QElapsedTimer TiempoD;
+    QElapsedTimer TiempoW;
+
+private slots:
+    void applyGravity();
+    void mov();
+
+public:
+    PersonajeMov(QGraphicsView *view, float velIn, float theta, QGraphicsItem* im = nullptr);
+    void keyPressEvent(QKeyEvent *event) override;
+
+    void moveBy(int dx, int dy);
+    void moveKy(int dx, int dy);
+    void keyReleaseEvent(QKeyEvent *event);
+    void movParabolico(float *dt);
+    int getPosicionX();
+    int getPosicionY();
+
+    void setSprite(int dir);
+    bool isOnGround();
 };
-#endif // PERSONAJEMOV_H
+
+#endif
