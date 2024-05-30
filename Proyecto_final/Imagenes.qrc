@@ -28,5 +28,6 @@
         <file>Imagenes/PersonajeCC.png</file>
         <file>Imagenes/PersonajeCC_in.png</file>
         <file>Imagenes/Perzonaje_De.png</file>
+        <file>Imagenes/municion.png</file>
     </qresource>
 </RCC>

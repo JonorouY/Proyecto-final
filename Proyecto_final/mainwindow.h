@@ -30,10 +30,11 @@ private slots:
     void updateMisil();
     void enableLaunch();
     void updatePositions();
-    void spawnEnemies();
-    void shootEnemigoBullets();
-    void removeEnemies();
-
+    void dispararEnemigo(QGraphicsPixmapItem* enemigo, QGraphicsPixmapItem* balaEnemigo);
+    void checkCollisions();
+    void movOndular();
+    void resetInvulnerability();
+    void resetFig20();
 private:
     Ui::MainWindow *ui;
     QGraphicsScene *scene1;
@@ -59,6 +60,8 @@ private:
     QGraphicsPixmapItem *fig18;
     QGraphicsPixmapItem *fig19;
     QGraphicsPixmapItem *fig20;
+    QGraphicsPixmapItem *fig21;
+    QGraphicsPixmapItem *balaEnSprite;
     QTimer *misilTimer;
     QTimer *launchTimer;
     QTimer *moveTimer;
@@ -88,6 +91,7 @@ private:
     QTimer *jumpTimer;
     bool isJumping;
     bool balaEnMovimiento;
+    bool Municion;
     qreal initialVelocity;
     qreal gravity;
     qreal jumpTime;
@@ -101,6 +105,17 @@ private:
     void updateBala();
 
     Jugador PP;
+
+    QList<QGraphicsPixmapItem*> enemigos;
+    QList<QGraphicsPixmapItem*> balasEnemigos;
+    QList<QGraphicsRectItem*> muros;
+    QList<QTimer*> disparoTimers;
+    QTimer *movOndularT;
+    bool isInvulnerable;
+    QTimer invulnerabilityTimer;
+    QTimer fig20Timer;
+    bool isFig20Invulnerable;
+
 
 };
 #endif // MAINWINDOW_H
