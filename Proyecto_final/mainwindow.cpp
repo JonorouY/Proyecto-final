@@ -4,14 +4,16 @@
 #include <QTimer>
 #include <QGraphicsScene>
 #include <QGraphicsPixmapItem>
+#include <QGraphicsProxyWidget>
 #include <QKeyEvent>
 #include <QDebug>
 #include <QList>
+#include <QColor>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
-    , lvl(1) //Se puede escoger el nivel cambiando éste valor 1,2 o 3
+    , lvl(3) //Se puede escoger el nivel cambiando éste valor 1,2 o 3
     , pierde(false)
     , misilTimer(new QTimer(this))
     , launchTimer(new QTimer(this))
@@ -23,10 +25,13 @@ MainWindow::MainWindow(QWidget *parent)
     , reductionStep(0.04)
     , tiempoTotal(0)
     , misilCount(0)
+    , cantidadEne(0)
+    , intentos(1)
     , canLaunch(true)
     , scene1(new QGraphicsScene(this))
     , scene2(new QGraphicsScene(this))
     , scene3(new QGraphicsScene(this))
+    , scene4(new QGraphicsScene(this))
     , angle(0) // Inicializar el ángulo a 0
     , radius(120) // Establecer el radio del círculo
     , center(160, 150) // Establecer el centro del círculo
@@ -48,6 +53,7 @@ MainWindow::MainWindow(QWidget *parent)
     setupScene1();
     setupScene2();
     setupScene3();
+    setupScene4();
     loadCurrentScene();
 }
 
@@ -436,13 +442,14 @@ void MainWindow::setupScene2()
     fig14->setPos(370, 130);
 
 
-    qDebug() << "Agregando personaje";
+
     jug1 = new PersonajeMov(ui->graphicsView,35,45*(3.1415/180));
     scene2 -> addItem(jug1);
     jug1->setPos(520,327);
     jug1->setScale(0.5);
     jug1->setFlag(QGraphicsItem::ItemIsFocusable);
     jug1->setFocus();
+
 
     //comprobar si el nivel 2 ya finalizo
     terminarLvl2= new QTimer(this);
@@ -466,7 +473,7 @@ void MainWindow::Finlvl2(){
 }
 void MainWindow::setupScene3()
 {
-    qDebug() << "Configurando fondo de scene3";
+
     // Fondo scene3
     QImage fondo3(":/Imagenes/fondo3.png");
     QBrush brocha1(fondo3);
@@ -643,6 +650,31 @@ void MainWindow::setupScene3()
 
     qDebug() << "setupScene3 completado";
 }
+
+void MainWindow::setupScene4(){
+
+    QImage fondo3(":/Imagenes/Fondo4.png");
+    QBrush brocha1(fondo3);
+    scene4->setBackgroundBrush(brocha1);
+    scene4->setSceneRect(400, 200, 1, 1);
+
+    QGraphicsTextItem *texto = new QGraphicsTextItem("¡Felicidades, ha ganado!");
+
+    QFont fuente("Arial", 20);
+    texto->setFont(fuente);
+    texto->setDefaultTextColor(Qt::white);
+    texto->setPos(250, 70);
+    scene4->addItem(texto);
+
+
+    QPushButton *boton = new QPushButton("GUARDAR PUNTAJE");
+    boton->setMinimumSize(100, 50);
+    QGraphicsProxyWidget *proxyWidget = scene4->addWidget(boton);
+    // Establecer la posición del botón
+    proxyWidget->setPos(350, 300); // Ajusta las coordenadas según sea necesario
+    // Conectar la señal del botón a un slot
+    connect(boton, &QPushButton::clicked, this, &MainWindow::on_Button_Clicked1);
+}
 void MainWindow::movOndular()
 {
     // Movimiento ondulatorio horizontal del sprite balaEn
@@ -675,10 +707,15 @@ void MainWindow::loadCurrentScene()
 {
     if (lvl == 1) {
         ui->graphicsView->setScene(scene1);
-    } else if (lvl == 2) {
+    }
+    else if (lvl == 2) {
         ui->graphicsView->setScene(scene2);
-    }else if (lvl == 3){
+    }
+    else if (lvl == 3){
         ui->graphicsView->setScene(scene3);
+    }
+    else if (lvl == 4){
+        ui->graphicsView->setScene(scene4);
     }
 
 }
@@ -879,13 +916,13 @@ void MainWindow::enemyShoot()
 
 void MainWindow::checkCollisions()
 {
-    qDebug() << "verificar colisones";
     if(fig20->collidesWithItem(enemigo1))
     {
         qDebug() << "Colisión entre fig20 y enemigo1";
         bala1Existe=false;
         enemigo1->setVisible(false);
         bala1->setVisible(false);
+        cantidadEne++;
     }
     else if(fig20->collidesWithItem(enemigo2))
     {
@@ -893,6 +930,7 @@ void MainWindow::checkCollisions()
         bala2Existe=false;
         enemigo2->setVisible(false);
         bala2->setVisible(false);
+        cantidadEne++;
     }
     else if(fig20->collidesWithItem(enemigo3))
     {
@@ -900,6 +938,7 @@ void MainWindow::checkCollisions()
         bala3Existe=false;
         enemigo3->setVisible(false);
         bala3->setVisible(false);
+        cantidadEne++;
     }
     else if(fig20->collidesWithItem(enemigo4))
     {
@@ -907,6 +946,7 @@ void MainWindow::checkCollisions()
         bala4Existe=false;
         enemigo4->setVisible(false);
         bala4->setVisible(false);
+        cantidadEne++;
     }
     else if(fig20->collidesWithItem(enemigo5))
     {
@@ -914,6 +954,7 @@ void MainWindow::checkCollisions()
         bala5Existe=false;
         enemigo5->setVisible(false);
         bala5->setVisible(false);
+        cantidadEne++;
     }
     else if(fig20->collidesWithItem(enemigo6))
     {
@@ -921,6 +962,7 @@ void MainWindow::checkCollisions()
         bala6Existe=false;
         enemigo6->setVisible(false);
         bala6->setVisible(false);
+        cantidadEne++;
     }
     else if(fig20->collidesWithItem(enemigo7))
     {
@@ -928,6 +970,7 @@ void MainWindow::checkCollisions()
         bala7Existe=false;
         enemigo7->setVisible(false);
         bala7->setVisible(false);
+        cantidadEne++;
     }
     else if(fig20->collidesWithItem(enemigo8))
     {
@@ -935,6 +978,7 @@ void MainWindow::checkCollisions()
         bala8Existe=false;
         enemigo8->setVisible(false);
         bala8->setVisible(false);
+        cantidadEne++;
     }
     else if(fig20->collidesWithItem(enemigo9))
     {
@@ -942,5 +986,19 @@ void MainWindow::checkCollisions()
         bala9Existe=false;
         enemigo9->setVisible(false);
         bala9->setVisible(false);
+        cantidadEne++;
     }
+}
+
+void MainWindow::on_pushButton_clicked()
+{
+    if(intentos == 1 ){
+        nombre = ui->nombre->text();
+    }
+    intentos--;
+}
+
+void MainWindow::on_Button_Clicked1() {
+    // Código para manejar el evento de clic del botón
+    qDebug("Botón clicado");
 }

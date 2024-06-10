@@ -155,7 +155,7 @@ void PersonajeMov::setSprite(int dir)
         setPixmap(sprite);
         cont = (cont + 1) % 7;
     } else {
-        qDebug() << "Sprite out of bounds!";
+
     }
 }
 
@@ -164,11 +164,9 @@ bool PersonajeMov::isOnGround()
     QList<QGraphicsItem*> collidingItemsList = collidingItems();
     for (QGraphicsItem* item : collidingItemsList) {
         if (dynamic_cast<QGraphicsPixmapItem*>(item)) {
-            qDebug() << "On ground";
             return true;
         }
     }
-    qDebug() << "Not on ground";
     return false;
 }
 
@@ -180,11 +178,9 @@ void PersonajeMov::applyGravity()
     if ( x >=  250 && x <= 310 && y >= 50 && y <= 100)
     {
         meta=true;
-        qDebug() << "Meta true";
     }
     else{
         meta = false;
-        qDebug() << "Meta false";
     }
     if(y >=390 ){
         caer=true;

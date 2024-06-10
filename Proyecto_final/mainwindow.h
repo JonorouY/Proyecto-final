@@ -34,11 +34,17 @@ private slots:
     void movOndular();
     void enemyShoot();
     void Finlvl2();
+    void on_pushButton_clicked();
+    void on_Button_Clicked1();
+
 private:
     Ui::MainWindow *ui;
     QGraphicsScene *scene1;
     QGraphicsScene *scene2;
     QGraphicsScene *scene3;
+
+    QGraphicsScene *scene4;
+
     QGraphicsPixmapItem *fig1, *fig2, *fig3, *fig4, *fig5, *fig6, *fig7, *fig8, *fig9, *fig10, *fig11, *fig12, *fig13, *fig14, *fig15, *fig16, *fig17, *fig18, *fig19, *fig20, *fig21;
     QGraphicsPixmapItem *balaEnSprite;
     QGraphicsPixmapItem *enemigo1, *enemigo2, *enemigo3, *enemigo4, *enemigo5, *enemigo6, *enemigo7, *enemigo8, *enemigo9;
@@ -59,6 +65,9 @@ private:
     void setupScene1();
     void setupScene2();
     void setupScene3();
+
+    void setupScene4();
+
     void loadCurrentScene();
     void resetScene1();
     void resetScene2();
@@ -89,7 +98,9 @@ private:
 
     Jugador PP;
     PersonajeMov *jug1;
-
+    int intentos;
+    int cantidadEne;
+    QString nombre;
 
     QList<QGraphicsRectItem*> muros;
     QTimer *movOndularT;

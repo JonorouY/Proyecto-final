@@ -29,5 +29,10 @@
         <file>Imagenes/PersonajeCC_in.png</file>
         <file>Imagenes/Perzonaje_De.png</file>
         <file>Imagenes/municion.png</file>
+        <file>Imagenes/BaseMadera.png</file>
+        <file>Imagenes/BaseMetalica.png</file>
+        <file>Imagenes/BaseMetalicaPe.png</file>
+        <file>Imagenes/Fondo4.png</file>
+        <file>Imagenes/Puntaje.txt</file>
     </qresource>
 </RCC>
