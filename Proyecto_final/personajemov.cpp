@@ -9,6 +9,8 @@ PersonajeMov::PersonajeMov(QGraphicsView *view, float velIn, float theta, QGraph
 {
     dir = 0;
     tiempoTrans = 0;
+    meta = true;
+    caer = true;
     setFlag(QGraphicsItem::ItemIsFocusable);
     setFocus();
     viewRect = view->size();
@@ -21,7 +23,7 @@ PersonajeMov::PersonajeMov(QGraphicsView *view, float velIn, float theta, QGraph
 
     timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, &PersonajeMov::applyGravity);
-    timer->start(200);
+    timer->start(1);
 
     timer1 = new QTimer(this);
     connect(timer1, &QTimer::timeout, this, &PersonajeMov::mov);
@@ -32,7 +34,12 @@ int PersonajeMov::getPosicionX(){
 int PersonajeMov::getPosicionY(){
     return y;
 }
-
+bool PersonajeMov::getMeta(){
+    return meta;
+}
+bool PersonajeMov::getCaer(){
+    return caer;
+}
 void PersonajeMov::keyPressEvent(QKeyEvent *event)
 {
     int key = event->key();
@@ -157,7 +164,7 @@ bool PersonajeMov::isOnGround()
     QList<QGraphicsItem*> collidingItemsList = collidingItems();
     for (QGraphicsItem* item : collidingItemsList) {
         if (dynamic_cast<QGraphicsPixmapItem*>(item)) {
-            //qDebug() << "On ground";
+            qDebug() << "On ground";
             return true;
         }
     }
@@ -169,6 +176,21 @@ void PersonajeMov::applyGravity()
 {
     if (!isOnGround()) {
         moveBy(0, 1);
+    }
+    if ( x >=  250 && x <= 310 && y >= 50 && y <= 100)
+    {
+        meta=true;
+        qDebug() << "Meta true";
+    }
+    else{
+        meta = false;
+        qDebug() << "Meta false";
+    }
+    if(y >=390 ){
+        caer=true;
+    }
+    else{
+        caer=false;
     }
 
 
@@ -182,7 +204,7 @@ void PersonajeMov::movParabolico(float *dt)
 
     if (isOnGround() && tiempoTrans >= 0.5) {
         timer1->stop();
-        timer->start(200);
+        timer->start(10);
         return;
     }
 
@@ -194,3 +216,17 @@ void PersonajeMov::mov()
     movParabolico(&tiempoTrans);
     tiempoTrans += 0.01;
 }
+
+PersonajeMov::~PersonajeMov() {
+    if (timer) {
+        timer->stop();
+        delete timer;
+        timer = nullptr;
+    }
+    if (timer1) {
+        timer1->stop();
+        delete timer1;
+        timer1 = nullptr;
+    }
+}
+

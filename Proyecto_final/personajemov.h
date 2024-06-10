@@ -18,6 +18,8 @@ private:
     QSize viewRect;
 
     bool flag = true;
+    bool meta;
+    bool caer;
     int cont = 0;
     int spriteX = 0;
     int spriteY = 120;
@@ -43,6 +45,7 @@ private slots:
 
 public:
     PersonajeMov(QGraphicsView *view, float velIn, float theta, QGraphicsItem* im = nullptr);
+    ~PersonajeMov();
     void keyPressEvent(QKeyEvent *event) override;
 
     void moveBy(int dx, int dy);
@@ -51,6 +54,8 @@ public:
     void movParabolico(float *dt);
     int getPosicionX();
     int getPosicionY();
+    bool getMeta();
+    bool getCaer();
 
     void setSprite(int dir);
     bool isOnGround();

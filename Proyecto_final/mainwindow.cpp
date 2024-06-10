@@ -11,7 +11,7 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
-    , lvl(3) //Se puede escoger el nivel cambiando éste valor 1,2 o 3
+    , lvl(1) //Se puede escoger el nivel cambiando éste valor 1,2 o 3
     , pierde(false)
     , misilTimer(new QTimer(this))
     , launchTimer(new QTimer(this))
@@ -19,6 +19,7 @@ MainWindow::MainWindow(QWidget *parent)
     , balaTimer(new QTimer(this))
     , movOndularT(new QTimer(this))
     , enemyShootTimer(new QTimer(this))
+    , terminarLvl2(new QTimer(this))
     , reductionStep(0.04)
     , tiempoTotal(0)
     , misilCount(0)
@@ -360,9 +361,9 @@ void MainWindow::setupScene1()
     moveTimer->start(50); // Establecer el intervalo del temporizador (50 ms)
 }
 
+
 void MainWindow::setupScene2()
 {
-
     // Fondo scene2
     QImage fondo2(":/Imagenes/fondo2.jpeg");
     QBrush brocha2(fondo2);
@@ -434,23 +435,34 @@ void MainWindow::setupScene2()
     fig14->setScale(0.15);
     fig14->setPos(370, 130);
 
-    QPixmap meta(":/Imagenes/bala.png");
-    fig13 = new QGraphicsPixmapItem();
-    scene2->addItem(fig13);
-    fig13->setPixmap(meta);
-    fig13->setScale(0.05);
-    fig13->setPos(273, 70);
 
-    fig13->setVisible(false);
-
-
-    PersonajeMov *jug1 = new PersonajeMov(ui->graphicsView,35,45*(3.1415/180));
+    qDebug() << "Agregando personaje";
+    jug1 = new PersonajeMov(ui->graphicsView,35,45*(3.1415/180));
     scene2 -> addItem(jug1);
     jug1->setPos(520,327);
     jug1->setScale(0.5);
     jug1->setFlag(QGraphicsItem::ItemIsFocusable);
     jug1->setFocus();
 
+    //comprobar si el nivel 2 ya finalizo
+    terminarLvl2= new QTimer(this);
+    connect(terminarLvl2, &QTimer::timeout, this, &MainWindow::Finlvl2);
+    terminarLvl2->start(10);
+}
+
+void MainWindow::Finlvl2(){
+    if(jug1->getMeta()==true){
+
+        terminarLvl2->stop();
+        disconnect(terminarLvl2, &QTimer::timeout, this, &MainWindow::Finlvl2);
+
+        lvl=3;
+        loadCurrentScene();
+    }
+
+    if(jug1->getCaer()==true){
+        resetScene2();
+    }
 }
 void MainWindow::setupScene3()
 {
@@ -694,9 +706,15 @@ void MainWindow::resetScene1()
 
 void MainWindow::resetScene2()
 {
+
+    terminarLvl2->stop();
+    disconnect(terminarLvl2, &QTimer::timeout, this, &MainWindow::Finlvl2);
+
+
+    delete jug1;
+    jug1 = nullptr;
+    scene2->removeItem(jug1);
     scene2->clear();
-    pierde = false;
-    lvl = 2;
 
     setupScene2();
     loadCurrentScene();

@@ -33,6 +33,7 @@ private slots:
     void updatePositions();
     void movOndular();
     void enemyShoot();
+    void Finlvl2();
 private:
     Ui::MainWindow *ui;
     QGraphicsScene *scene1;
@@ -46,6 +47,7 @@ private:
     QTimer *launchTimer;
     QTimer *moveTimer;
     QTimer *balaTimer;
+    QTimer *terminarLvl2;
     double reductionStep;
     int tiempoTotal;
     int misilCount;
@@ -86,6 +88,8 @@ private:
     void updateBala();
 
     Jugador PP;
+    PersonajeMov *jug1;
+
 
     QList<QGraphicsRectItem*> muros;
     QTimer *movOndularT;
