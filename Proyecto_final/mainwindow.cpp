@@ -1077,7 +1077,7 @@ void MainWindow::on_pushButton_clicked()
 
 void MainWindow::on_Button_Clicked1() {
     std::string text = nombre.toStdString() + " " + std::to_string(puntaje) + "\n";
-    std::ofstream outFile("../Puntaje.txt" , std::ios::app);
+    std::ofstream outFile("./Puntaje.txt" , std::ios::app);
 
     if (outFile.is_open())
     {

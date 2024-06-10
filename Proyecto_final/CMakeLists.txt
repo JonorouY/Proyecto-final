@@ -28,6 +28,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         enemigos.h enemigos.cpp
         personajemov.h personajemov.cpp
         Imagenes.qrc
+        Documento
+
 
     )
 # Define target properties for Android with Qt 6 as:
