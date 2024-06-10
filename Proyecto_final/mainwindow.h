@@ -106,6 +106,8 @@ private:
     QTimer *movOndularT;
     QTimer fig20Timer;
 
+    int puntaje;
+
     QTimer *enemyShootTimer;
     bool bala1Existe, bala2Existe, bala3Existe, bala4Existe, bala5Existe, bala6Existe, bala7Existe, bala8Existe, bala9Existe;
 

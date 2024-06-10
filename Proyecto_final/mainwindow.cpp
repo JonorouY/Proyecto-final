@@ -9,11 +9,12 @@
 #include <QDebug>
 #include <QList>
 #include <QColor>
+#include <fstream>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
-    , lvl(3) //Se puede escoger el nivel cambiando éste valor 1,2 o 3
+    , lvl(1) //Se puede escoger el nivel cambiando éste valor 1,2 o 3
     , pierde(false)
     , misilTimer(new QTimer(this))
     , launchTimer(new QTimer(this))
@@ -47,9 +48,11 @@ MainWindow::MainWindow(QWidget *parent)
     , bala7Existe(true)
     , bala8Existe(true)
     , bala9Existe(true)
+    , puntaje(1000)
 {
     ui->setupUi(this);
     ui->graphicsView->scale(1.2, 1.2);
+    ui->lcdNumber->display(puntaje);
     setupScene1();
     setupScene2();
     setupScene3();
@@ -213,6 +216,8 @@ void MainWindow::updateBala()
 
     if(!fig20->isVisible())
     {
+        puntaje-=20;
+        ui->lcdNumber->display(puntaje);
         fig20->setPos(1000,1000);
         balaEnMovimiento = false;
         balaTimer->stop();
@@ -223,26 +228,21 @@ void MainWindow::updateBala()
 
     for (auto muro : muros) {
         if (fig20->collidesWithItem(muro)) {
+            puntaje-=5;
+            ui->lcdNumber->display(puntaje);
             balaTimer->stop();
             balaEnMovimiento = false;
             fig20->setVisible(false);
             return;
         }
     }
-
-    if(fig20->collidesWithItem(enemigo1))
-    {
-        balaTimer->stop();
-        balaEnMovimiento = false;
-        enemigo1->setVisible(false);
-        fig20->setVisible(false);
-        return;
-    }
 }
 
 void MainWindow::launchMisil()
 {
     if (misilCount >= 5) {
+        puntaje-=50;
+        ui->lcdNumber->display(puntaje);
         pierde = true;
         resetScene1();
         return;
@@ -270,6 +270,8 @@ void MainWindow::updateMisil()
         {
             misilTimer->stop();
             fig3->setVisible(false);
+            puntaje-=20;
+            ui->lcdNumber->display(puntaje);
             return;
         }
 
@@ -291,6 +293,8 @@ void MainWindow::updateMisil()
         {
             misilTimer->stop();
             fig3->setVisible(false);
+            puntaje-=20;
+            ui->lcdNumber->display(puntaje);
             return;
         }
     }
@@ -314,7 +318,7 @@ void MainWindow::updatePositions()
     if(lvl == 1)
     {
         // Incrementar el ángulo
-        angle += 0.05; // Ajusta este valor para cambiar la velocidad del movimiento circular
+        angle += 0.1; // Ajusta este valor para cambiar la velocidad del movimiento circular
 
         // Calcular la nueva posición en el movimiento circular
         qreal newX = center.x() + radius * cos(angle);
@@ -468,6 +472,8 @@ void MainWindow::Finlvl2(){
     }
 
     if(jug1->getCaer()==true){
+        puntaje-=20;
+        ui->lcdNumber->display(puntaje);
         resetScene2();
     }
 }
@@ -699,6 +705,8 @@ void MainWindow::movOndular()
 
     if(fig19->collidesWithItem(balaEnSprite))
     {
+        puntaje-=20;
+        ui->lcdNumber->display(puntaje);
         resetScene3();
     }
 }
@@ -785,6 +793,7 @@ void MainWindow::resetScene3()
     Municion = false;
     PP.setVida(100);
     PP.setMunicion(6);
+    cantidadEne=0;
 
     bala1Existe =true;
     bala2Existe =true;
@@ -812,6 +821,8 @@ void MainWindow::enemyShoot()
         }
         // Comprobar colisión con el personaje
         if (fig19->collidesWithItem(bala1)) {
+            puntaje-=10;
+            ui->lcdNumber->display(puntaje);
             resetScene3();
         }
     }
@@ -824,6 +835,8 @@ void MainWindow::enemyShoot()
         }
         // Comprobar colisión con el personaje
         if (fig19->collidesWithItem(bala2)) {
+            puntaje-=10;
+            ui->lcdNumber->display(puntaje);
             resetScene3();
         }
     }
@@ -836,6 +849,8 @@ void MainWindow::enemyShoot()
         }
         // Comprobar colisión con el personaje
         if (fig19->collidesWithItem(bala3)) {
+            puntaje-=10;
+            ui->lcdNumber->display(puntaje);
             resetScene3();
         }
     }
@@ -848,6 +863,8 @@ void MainWindow::enemyShoot()
         }
         // Comprobar colisión con el personaje
         if (fig19->collidesWithItem(bala4)) {
+            puntaje-=10;
+            ui->lcdNumber->display(puntaje);
             resetScene3();
         }
     }
@@ -860,6 +877,8 @@ void MainWindow::enemyShoot()
         }
         // Comprobar colisión con el personaje
         if (fig19->collidesWithItem(bala5)) {
+            puntaje-=10;
+            ui->lcdNumber->display(puntaje);
             resetScene3();
         }
     }
@@ -872,6 +891,8 @@ void MainWindow::enemyShoot()
         }
         // Comprobar colisión con el personaje
         if (fig19->collidesWithItem(bala6)) {
+            puntaje-=10;
+            ui->lcdNumber->display(puntaje);
             resetScene3();
         }
     }
@@ -884,6 +905,8 @@ void MainWindow::enemyShoot()
         }
         // Comprobar colisión con el personaje
         if (fig19->collidesWithItem(bala7)) {
+            puntaje-=10;
+            ui->lcdNumber->display(puntaje);
             resetScene3();
         }
     }
@@ -896,6 +919,8 @@ void MainWindow::enemyShoot()
         }
         // Comprobar colisión con el personaje
         if (fig19->collidesWithItem(bala8)) {
+            puntaje-=10;
+            ui->lcdNumber->display(puntaje);
             resetScene3();
         }
     }
@@ -908,6 +933,8 @@ void MainWindow::enemyShoot()
         }
         // Comprobar colisión con el personaje
         if (fig19->collidesWithItem(bala9)) {
+            puntaje-=10;
+            ui->lcdNumber->display(puntaje);
             resetScene3();
         }
     }
@@ -916,77 +943,127 @@ void MainWindow::enemyShoot()
 
 void MainWindow::checkCollisions()
 {
-    if(fig20->collidesWithItem(enemigo1))
+    if(bala1Existe)
     {
-        qDebug() << "Colisión entre fig20 y enemigo1";
-        bala1Existe=false;
-        enemigo1->setVisible(false);
-        bala1->setVisible(false);
-        cantidadEne++;
+        if(fig20->collidesWithItem(enemigo1))
+        {
+            qDebug() << "Colisión entre fig20 y enemigo1";
+            bala1Existe=false;
+            enemigo1->setVisible(false);
+            bala1->setVisible(false);
+            cantidadEne++;
+        }
     }
-    else if(fig20->collidesWithItem(enemigo2))
+    if(bala2Existe)
     {
-        qDebug() << "Colisión entre fig20 y enemigo1";
-        bala2Existe=false;
-        enemigo2->setVisible(false);
-        bala2->setVisible(false);
-        cantidadEne++;
+        if(fig20->collidesWithItem(enemigo2))
+        {
+            qDebug() << "Colisión entre fig20 y enemigo1";
+            bala2Existe=false;
+            enemigo2->setVisible(false);
+            bala2->setVisible(false);
+            cantidadEne++;
+        }
     }
-    else if(fig20->collidesWithItem(enemigo3))
+    if(bala3Existe)
     {
-        qDebug() << "Colisión entre fig20 y enemigo1";
-        bala3Existe=false;
-        enemigo3->setVisible(false);
-        bala3->setVisible(false);
-        cantidadEne++;
+        if(fig20->collidesWithItem(enemigo3))
+        {
+            qDebug() << "Colisión entre fig20 y enemigo1";
+            bala3Existe=false;
+            enemigo3->setVisible(false);
+            bala3->setVisible(false);
+            cantidadEne++;
+        }
     }
-    else if(fig20->collidesWithItem(enemigo4))
+    if(bala4Existe)
     {
-        qDebug() << "Colisión entre fig20 y enemigo1";
-        bala4Existe=false;
-        enemigo4->setVisible(false);
-        bala4->setVisible(false);
-        cantidadEne++;
+        if(fig20->collidesWithItem(enemigo4))
+        {
+            qDebug() << "Colisión entre fig20 y enemigo1";
+            bala4Existe=false;
+            enemigo4->setVisible(false);
+            bala4->setVisible(false);
+            cantidadEne++;
+        }
     }
-    else if(fig20->collidesWithItem(enemigo5))
+    if(bala5Existe)
     {
-        qDebug() << "Colisión entre fig20 y enemigo1";
-        bala5Existe=false;
-        enemigo5->setVisible(false);
-        bala5->setVisible(false);
-        cantidadEne++;
+        if(fig20->collidesWithItem(enemigo5))
+        {
+            qDebug() << "Colisión entre fig20 y enemigo1";
+            bala5Existe=false;
+            enemigo5->setVisible(false);
+            bala5->setVisible(false);
+            cantidadEne++;
+        }
     }
-    else if(fig20->collidesWithItem(enemigo6))
+    if(bala6Existe)
     {
-        qDebug() << "Colisión entre fig20 y enemigo1";
-        bala6Existe=false;
-        enemigo6->setVisible(false);
-        bala6->setVisible(false);
-        cantidadEne++;
+        if(fig20->collidesWithItem(enemigo6))
+        {
+            qDebug() << "Colisión entre fig20 y enemigo1";
+            bala6Existe=false;
+            enemigo6->setVisible(false);
+            bala6->setVisible(false);
+            cantidadEne++;
+        }
     }
-    else if(fig20->collidesWithItem(enemigo7))
+    if(bala7Existe)
     {
-        qDebug() << "Colisión entre fig20 y enemigo1";
-        bala7Existe=false;
-        enemigo7->setVisible(false);
-        bala7->setVisible(false);
-        cantidadEne++;
+        if(fig20->collidesWithItem(enemigo7))
+        {
+            qDebug() << "Colisión entre fig20 y enemigo1";
+            bala7Existe=false;
+            enemigo7->setVisible(false);
+            bala7->setVisible(false);
+            cantidadEne++;
+        }
     }
-    else if(fig20->collidesWithItem(enemigo8))
+    if(bala8Existe)
     {
-        qDebug() << "Colisión entre fig20 y enemigo1";
-        bala8Existe=false;
-        enemigo8->setVisible(false);
-        bala8->setVisible(false);
-        cantidadEne++;
+        if(fig20->collidesWithItem(enemigo8))
+        {
+            qDebug() << "Colisión entre fig20 y enemigo1";
+            bala8Existe=false;
+            enemigo8->setVisible(false);
+            bala8->setVisible(false);
+            cantidadEne++;
+        }
     }
-    else if(fig20->collidesWithItem(enemigo9))
+    if(bala9Existe)
     {
-        qDebug() << "Colisión entre fig20 y enemigo1";
-        bala9Existe=false;
-        enemigo9->setVisible(false);
-        bala9->setVisible(false);
-        cantidadEne++;
+        if(fig20->collidesWithItem(enemigo9))
+        {
+            qDebug() << "Colisión entre fig20 y enemigo1";
+            bala9Existe=false;
+            enemigo9->setVisible(false);
+            bala9->setVisible(false);
+            cantidadEne++;
+        }
+    }
+
+    if(cantidadEne == 9){
+
+        // Detener y desconectar el temporizador de movimiento ondulatorio
+        if (movOndularT) {
+            movOndularT->stop();
+            disconnect(movOndularT, &QTimer::timeout, this, &MainWindow::movOndular);
+        }
+
+        // Detener y desconectar el temporizador de disparo de los enemigos
+        if (enemyShootTimer) {
+            enemyShootTimer->stop();
+            disconnect(enemyShootTimer, &QTimer::timeout, this, &MainWindow::enemyShoot);
+        }
+
+        // Eliminar todos los elementos de la escena
+        scene3->clear();
+
+        // Limpiar la lista de muros
+        muros.clear();
+        lvl=4;
+        loadCurrentScene();
     }
 }
 
@@ -999,6 +1076,16 @@ void MainWindow::on_pushButton_clicked()
 }
 
 void MainWindow::on_Button_Clicked1() {
-    // Código para manejar el evento de clic del botón
-    qDebug("Botón clicado");
+    std::string text = nombre.toStdString() + " " + std::to_string(puntaje) + "\n";
+    std::ofstream outFile("../Puntaje.txt" , std::ios::app);
+
+    if (outFile.is_open())
+    {
+        outFile << text;
+        outFile.close();
+    }
+    else
+    {
+        qDebug() << "No se pudo abrir el archivo para escritura";
+    }
 }
