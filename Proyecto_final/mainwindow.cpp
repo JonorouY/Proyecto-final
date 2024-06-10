@@ -11,13 +11,14 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
-    , lvl(2) //Se puede escoger el nivel cambiando éste valor 1,2 o 3
+    , lvl(3) //Se puede escoger el nivel cambiando éste valor 1,2 o 3
     , pierde(false)
     , misilTimer(new QTimer(this))
     , launchTimer(new QTimer(this))
     , moveTimer(new QTimer(this))
     , balaTimer(new QTimer(this))
     , movOndularT(new QTimer(this))
+    , enemyShootTimer(new QTimer(this))
     , reductionStep(0.04)
     , tiempoTotal(0)
     , misilCount(0)
@@ -31,10 +32,18 @@ MainWindow::MainWindow(QWidget *parent)
     , PP(100,6,50,50)
     , balaEnMovimiento(false)
     , Municion(false)
-    , isInvulnerable(false)
-    , isFig20Invulnerable(false)
+    , bala1Existe(true)
+    , bala2Existe(true)
+    , bala3Existe(true)
+    , bala4Existe(true)
+    , bala5Existe(true)
+    , bala6Existe(true)
+    , bala7Existe(true)
+    , bala8Existe(true)
+    , bala9Existe(true)
 {
     ui->setupUi(this);
+    ui->graphicsView->scale(1.2, 1.2);
     setupScene1();
     setupScene2();
     setupScene3();
@@ -203,21 +212,25 @@ void MainWindow::updateBala()
         return;
     }
 
-    // Verificar colisiones con enemigos
-    for (int i = 0; i < enemigos.size(); ++i) {
-        if (fig20->collidesWithItem(enemigos[i])) {
-            scene3->removeItem(enemigos[i]);
-            enemigos.removeAt(i);
-            scene3->removeItem(balasEnemigos[i]);
-            balasEnemigos.removeAt(i);
-            fig20->setVisible(false);
+    fig20->setPos(newPos);
+
+    for (auto muro : muros) {
+        if (fig20->collidesWithItem(muro)) {
             balaTimer->stop();
             balaEnMovimiento = false;
+            fig20->setVisible(false);
             return;
         }
     }
 
-    fig20->setPos(newPos);
+    if(fig20->collidesWithItem(enemigo1))
+    {
+        balaTimer->stop();
+        balaEnMovimiento = false;
+        enemigo1->setVisible(false);
+        fig20->setVisible(false);
+        return;
+    }
 }
 
 void MainWindow::launchMisil()
@@ -314,7 +327,6 @@ void MainWindow::setupScene1()
     scene1->setBackgroundBrush(brocha1);
     // Configuramos el fondo
     scene1->setSceneRect(300, 200, 1, 1);
-    ui->graphicsView->scale(1.2, 1.2);
 
     // Avion
     QPixmap avion(":/Imagenes/avion.png");
@@ -480,36 +492,117 @@ void MainWindow::setupScene3()
     movOndularT->start(50);
 
     qDebug() << "Creando enemigos";
-    // Crear enemigos
     QPixmap enemigo(":/Imagenes/Enemigo_Ab.png");
-    for (int i = 0; i < 10; i++) {
-        qDebug() << "Agregando enemigo" << i;
-        QGraphicsPixmapItem* enemigoItem = new QGraphicsPixmapItem();
-        enemigoItem->setPixmap(enemigo);
-        enemigoItem->setScale(0.6);
-        int xPos = 58 + (i * (648 - 110) / 9);
-        enemigoItem->setPos(xPos, 30);
-        scene3->addItem(enemigoItem);
-        enemigos.append(enemigoItem);
 
-        qDebug() << "Agregando bala para enemigo" << i;
-        // Crear balas para los enemigos
-        QGraphicsPixmapItem* balaEnemigo = new QGraphicsPixmapItem();
-        balaEnemigo->setPixmap(QPixmap(":/Imagenes/balaEn.png"));
-        balaEnemigo->setScale(0.05);
-        balaEnemigo->setVisible(false);
-        scene3->addItem(balaEnemigo);
-        balasEnemigos.append(balaEnemigo);
+    enemigo1 = new QGraphicsPixmapItem();
+    enemigo1->setPixmap(enemigo);
+    enemigo1->setScale(0.6);
+    enemigo1->setPos(58 + (1 * (648 - 110) / 9), 30);
+    scene3->addItem(enemigo1);
 
-        qDebug() << "Configurando temporizador de disparo para enemigo" << i;
-        // Configurar el temporizador de disparo para cada enemigo
-        QTimer* disparoTimer = new QTimer(this);
-        connect(disparoTimer, &QTimer::timeout, this, [this, enemigoItem, balaEnemigo](){
-            dispararEnemigo(enemigoItem, balaEnemigo);
-        });
-        disparoTimers.append(disparoTimer);
-        disparoTimer->start(2000);
-    }
+    enemigo2 = new QGraphicsPixmapItem();
+    enemigo2->setPixmap(enemigo);
+    enemigo2->setScale(0.6);
+    enemigo2->setPos(58 + (2 * (648 - 110) / 9), 30);
+    scene3->addItem(enemigo2);
+
+    enemigo3 = new QGraphicsPixmapItem();
+    enemigo3->setPixmap(enemigo);
+    enemigo3->setScale(0.6);
+    enemigo3->setPos(58 + (3 * (648 - 110) / 9), 30);
+    scene3->addItem(enemigo3);
+
+    enemigo4 = new QGraphicsPixmapItem();
+    enemigo4->setPixmap(enemigo);
+    enemigo4->setScale(0.6);
+    enemigo4->setPos(58 + (4 * (648 - 110) / 9), 30);
+    scene3->addItem(enemigo4);
+
+    enemigo5 = new QGraphicsPixmapItem();
+    enemigo5->setPixmap(enemigo);
+    enemigo5->setScale(0.6);
+    enemigo5->setPos(58 + (5 * (648 - 110) / 9), 30);
+    scene3->addItem(enemigo5);
+
+    enemigo6 = new QGraphicsPixmapItem();
+    enemigo6->setPixmap(enemigo);
+    enemigo6->setScale(0.6);
+    enemigo6->setPos(58 + (6 * (648 - 110) / 9), 30);
+    scene3->addItem(enemigo6);
+
+    enemigo7 = new QGraphicsPixmapItem();
+    enemigo7->setPixmap(enemigo);
+    enemigo7->setScale(0.6);
+    enemigo7->setPos(58 + (7 * (648 - 110) / 9), 30);
+    scene3->addItem(enemigo7);
+
+    enemigo8 = new QGraphicsPixmapItem();
+    enemigo8->setPixmap(enemigo);
+    enemigo8->setScale(0.6);
+    enemigo8->setPos(58 + (8 * (648 - 110) / 9), 30);
+    scene3->addItem(enemigo8);
+
+    enemigo9 = new QGraphicsPixmapItem();
+    enemigo9->setPixmap(enemigo);
+    enemigo9->setScale(0.6);
+    enemigo9->setPos(58 + (9 * (648 - 110) / 9), 30);
+    scene3->addItem(enemigo9);
+
+    QPixmap balaEnememigos(":/Imagenes/balaEn.png");
+
+    bala1 = new QGraphicsPixmapItem();
+    bala1->setPixmap(balaEnememigos);
+    bala1->setScale(0.05);
+    bala1->setPos(122, 65);
+    scene3->addItem(bala1);
+
+    bala2 = new QGraphicsPixmapItem();
+    bala2->setPixmap(balaEnememigos);
+    bala2->setScale(0.05);
+    bala2->setPos(182, 65);
+    scene3->addItem(bala2);
+
+    bala3 = new QGraphicsPixmapItem();
+    bala3->setPixmap(balaEnememigos);
+    bala3->setScale(0.05);
+    bala3->setPos(242, 65);
+    scene3->addItem(bala3);
+
+    bala4 = new QGraphicsPixmapItem();
+    bala4->setPixmap(balaEnememigos);
+    bala4->setScale(0.05);
+    bala4->setPos(302, 65);
+    scene3->addItem(bala4);
+
+    bala5 = new QGraphicsPixmapItem();
+    bala5->setPixmap(balaEnememigos);
+    bala5->setScale(0.05);
+    bala5->setPos(362, 65);
+    scene3->addItem(bala5);
+
+    bala6 = new QGraphicsPixmapItem();
+    bala6->setPixmap(balaEnememigos);
+    bala6->setScale(0.05);
+    bala6->setPos(422, 65);
+    scene3->addItem(bala6);
+
+    bala7 = new QGraphicsPixmapItem();
+    bala7->setPixmap(balaEnememigos);
+    bala7->setScale(0.05);
+    bala7->setPos(482, 65);
+    scene3->addItem(bala7);
+
+    bala8 = new QGraphicsPixmapItem();
+    bala8->setPixmap(balaEnememigos);
+    bala8->setScale(0.05);
+    bala8->setPos(542, 65);
+    scene3->addItem(bala8);
+
+    bala9 = new QGraphicsPixmapItem();
+    bala9->setPixmap(balaEnememigos);
+    bala9->setScale(0.05);
+    bala9->setPos(602, 65);
+    scene3->addItem(bala9);
 
     qDebug() << "Creando muros";
     // Crear muros cuadrados
@@ -532,14 +625,11 @@ void MainWindow::setupScene3()
     scene3->addItem(fig21);
     fig21->setPos(635,30);
 
-    qDebug() << "setupScene3 completado";
-    //Invulnerabilidad
-    connect(&invulnerabilityTimer, &QTimer::timeout, this, &MainWindow::resetInvulnerability);
-    invulnerabilityTimer.setSingleShot(true);
+    // Conectar el temporizador para que los enemigos disparen cada 2 segundos
+    connect(enemyShootTimer, &QTimer::timeout, this, &MainWindow::enemyShoot);
+    enemyShootTimer->start(50);
 
-    // invulnerabilidad cuando chocan bala con bala
-    connect(&fig20Timer, &QTimer::timeout, this, &MainWindow::resetFig20);
-    fig20Timer.setSingleShot(true); // El temporizador solo dispara una vez
+    qDebug() << "setupScene3 completado";
 }
 void MainWindow::movOndular()
 {
@@ -548,7 +638,8 @@ void MainWindow::movOndular()
     qreal waveFrequency = 0.05; // Frecuencia de la onda
     qreal startX = 110; // Posición inicial en X
     qreal endX = 648; // Posición final en X
-    qreal speed = 5; // Velocidad de movimiento
+    qreal speed =5;// Velocidad de movimiento
+
 
     // Calcular la nueva posición ondulatoria
     qreal waveX = balaEnSprite->pos().x() + speed;
@@ -566,28 +657,8 @@ void MainWindow::movOndular()
     {
         resetScene3();
     }
-
-    checkCollisions();
 }
-void MainWindow::dispararEnemigo(QGraphicsPixmapItem* enemigo, QGraphicsPixmapItem* balaEnemigo)
-{
-    balaEnemigo->setPos(enemigo->pos() + QPointF(10, 20)); // Ajustar la posición inicial de la bala
-    balaEnemigo->setVisible(true);
 
-    // Configurar el movimiento de la bala
-    QTimer* balaTimer = new QTimer(this);
-    connect(balaTimer, &QTimer::timeout, this, [balaEnemigo, balaTimer](){
-        QPointF newPos = balaEnemigo->pos() + QPointF(0, 10);
-        if (newPos.y() > 600) { // Asumiendo que 600 es el límite inferior de la escena
-            balaEnemigo->setVisible(false);
-            balaTimer->stop();
-            balaTimer->deleteLater();
-        } else {
-            balaEnemigo->setPos(newPos);
-        }
-    });
-    balaTimer->start(50);
-}
 void MainWindow::loadCurrentScene()
 {
     if (lvl == 1) {
@@ -602,6 +673,16 @@ void MainWindow::loadCurrentScene()
 
 void MainWindow::resetScene1()
 {
+    // Detener los temporizadores
+    misilTimer->stop();
+    launchTimer->stop();
+    moveTimer->stop();
+
+    // Desconectar las señales de los temporizadores
+    disconnect(misilTimer, &QTimer::timeout, this, &MainWindow::updateMisil);
+    disconnect(launchTimer, &QTimer::timeout, this, &MainWindow::enableLaunch);
+    disconnect(moveTimer, &QTimer::timeout, this, &MainWindow::updatePositions);
+
     scene1->clear();
     misilCount = 0;
     pierde = false;
@@ -625,78 +706,223 @@ void MainWindow::resetScene2()
 
 void MainWindow::resetScene3()
 {
-    qDebug() << "Borrando disparoTimers";
-    // Detener y limpiar los temporizadores de disparo
-    for (QTimer* timer : disparoTimers) {
-        timer->stop();
-        delete timer;
+
+    // Detener y desconectar el temporizador de movimiento ondulatorio
+    if (movOndularT) {
+        movOndularT->stop();
+        disconnect(movOndularT, &QTimer::timeout, this, &MainWindow::movOndular);
     }
-    disparoTimers.clear();
-    qDebug() << "limpaindo scene3";
+
+    // Detener y desconectar el temporizador de disparo de los enemigos
+    if (enemyShootTimer) {
+        enemyShootTimer->stop();
+        disconnect(enemyShootTimer, &QTimer::timeout, this, &MainWindow::enemyShoot);
+    }
+
     // Eliminar todos los elementos de la escena
     scene3->clear();
 
-    // Limpiar las listas de enemigos, balas, muros, etc.
-    enemigos.clear();
-    balasEnemigos.clear();
+    // Limpiar la lista de muros
     muros.clear();
 
-    // Resetear cualquier otra variable relevante
+    // Restablecer cualquier otra variable relevante
     angle = 0;
     Municion = false;
     PP.setVida(100);
     PP.setMunicion(6);
 
+    bala1Existe =true;
+    bala2Existe =true;
+    bala3Existe =true;
+    bala4Existe =true;
+    bala5Existe =true;
+    bala6Existe =true;
+    bala7Existe =true;
+    bala8Existe =true;
+    bala9Existe =true;
+
+
     // Volver a configurar la escena
     setupScene3();
     loadCurrentScene();
 }
+void MainWindow::enemyShoot()
+{
+    if(bala1Existe)
+    {
+        if (bala1->pos().y() < 400) { // Limite de pantalla
+            bala1->setPos(bala1->pos().x(), bala1->pos().y() + 10); // Mover hacia abajo
+        } else {
+            bala1->setPos(bala1->pos().x(), 65); // Resetear la posición
+        }
+        // Comprobar colisión con el personaje
+        if (fig19->collidesWithItem(bala1)) {
+            resetScene3();
+        }
+    }
+    if(bala2Existe)
+    {
+        if (bala2->pos().y() < 400) { // Limite de pantalla
+            bala2->setPos(bala2->pos().x(), bala2->pos().y() + 10); // Mover hacia abajo
+        } else {
+            bala2->setPos(bala2->pos().x(), 65); // Resetear la posición
+        }
+        // Comprobar colisión con el personaje
+        if (fig19->collidesWithItem(bala2)) {
+            resetScene3();
+        }
+    }
+    if(bala3Existe)
+    {
+        if (bala3->pos().y() < 400) { // Limite de pantalla
+            bala3->setPos(bala3->pos().x(), bala3->pos().y() + 10); // Mover hacia abajo
+        } else {
+            bala3->setPos(bala3->pos().x(), 65); // Resetear la posición
+        }
+        // Comprobar colisión con el personaje
+        if (fig19->collidesWithItem(bala3)) {
+            resetScene3();
+        }
+    }
+    if(bala4Existe)
+    {
+        if (bala4->pos().y() < 400) { // Limite de pantalla
+            bala4->setPos(bala4->pos().x(), bala4->pos().y() + 10); // Mover hacia abajo
+        } else {
+            bala4->setPos(bala4->pos().x(), 65); // Resetear la posición
+        }
+        // Comprobar colisión con el personaje
+        if (fig19->collidesWithItem(bala4)) {
+            resetScene3();
+        }
+    }
+    if(bala5Existe)
+    {
+        if (bala5->pos().y() < 400) { // Limite de pantalla
+            bala5->setPos(bala5->pos().x(), bala5->pos().y() + 10); // Mover hacia abajo
+        } else {
+            bala5->setPos(bala5->pos().x(), 65); // Resetear la posición
+        }
+        // Comprobar colisión con el personaje
+        if (fig19->collidesWithItem(bala5)) {
+            resetScene3();
+        }
+    }
+    if(bala6Existe)
+    {
+        if (bala6->pos().y() < 400) { // Limite de pantalla
+            bala6->setPos(bala6->pos().x(), bala6->pos().y() + 10); // Mover hacia abajo
+        } else {
+            bala6->setPos(bala6->pos().x(), 65); // Resetear la posición
+        }
+        // Comprobar colisión con el personaje
+        if (fig19->collidesWithItem(bala6)) {
+            resetScene3();
+        }
+    }
+    if(bala7Existe)
+    {
+        if (bala7->pos().y() < 400) { // Limite de pantalla
+            bala7->setPos(bala7->pos().x(), bala7->pos().y() + 10); // Mover hacia abajo
+        } else {
+            bala7->setPos(bala7->pos().x(), 65); // Resetear la posición
+        }
+        // Comprobar colisión con el personaje
+        if (fig19->collidesWithItem(bala7)) {
+            resetScene3();
+        }
+    }
+    if(bala8Existe)
+    {
+        if (bala8->pos().y() < 400) { // Limite de pantalla
+            bala8->setPos(bala8->pos().x(), bala8->pos().y() + 10); // Mover hacia abajo
+        } else {
+            bala8->setPos(bala8->pos().x(), 65); // Resetear la posición
+        }
+        // Comprobar colisión con el personaje
+        if (fig19->collidesWithItem(bala8)) {
+            resetScene3();
+        }
+    }
+    if(bala9Existe)
+    {
+        if (bala9->pos().y() < 400) { // Limite de pantalla
+            bala9->setPos(bala9->pos().x(), bala9->pos().y() + 10); // Mover hacia abajo
+        } else {
+            bala9->setPos(bala9->pos().x(), 65); // Resetear la posición
+        }
+        // Comprobar colisión con el personaje
+        if (fig19->collidesWithItem(bala9)) {
+            resetScene3();
+        }
+    }
+    checkCollisions();
+}
 
 void MainWindow::checkCollisions()
 {
-    // Primero, verificar colisiones entre fig20 y las balas de los enemigos
-    if (!isFig20Invulnerable) { // Solo si fig20 no es invulnerable
-        for (auto balaEnemigo : balasEnemigos) {
-            if (fig20->collidesWithItem(balaEnemigo)) {
-                isFig20Invulnerable = true;       // Activar la invulnerabilidad de fig20
-                fig20Timer.start(1900);           // Iniciar el temporizador de invulnerabilidad por 1,9 segundos
-                fig20->setVisible(false);         // Hacer invisible fig20
-                balaEnemigo->setVisible(false);// Hacer invisible la bala
-                break; // Salir del bucle una vez que se ha encontrado una colisión
-            }
-        }
-    }
-
-    if (isInvulnerable) {
-        return; // Si es invulnerable, no hacer nada
-    }
-
-    // Verificar colisiones entre fig19 y las balas de los enemigos
-    for (auto balaEnemigo : balasEnemigos) {
-        if (fig19->collidesWithItem(balaEnemigo)) {
-            PP.setVida(PP.getVida() - 40); // Reducir la vida del personaje
-            if (PP.getVida() <= 0) {
-                resetScene3(); // Si la vida es igual o menor a 0, reiniciar la escena 3
-            } else {
-                isInvulnerable = true;           // Activar la invulnerabilidad
-                invulnerabilityTimer.start(500); // Iniciar el temporizador de invulnerabilidad por 1 segundo
-            }
-            return; // Solo se permite una colisión a la vez
-        }
-    }
-}
-
-void MainWindow::resetInvulnerability()
-{
-    isInvulnerable = false;
-}
-
-void MainWindow::resetFig20()
-{
-    isFig20Invulnerable = false; // Después de 1,9 segundos, se desactiva la invulnerabilidad
-    fig20->setVisible(true);     // Hacer visible fig20 nuevamente
-    for(auto balaEnemigo : balasEnemigos)
+    qDebug() << "verificar colisones";
+    if(fig20->collidesWithItem(enemigo1))
     {
-        balaEnemigo->setVisible(true);
+        qDebug() << "Colisión entre fig20 y enemigo1";
+        bala1Existe=false;
+        enemigo1->setVisible(false);
+        bala1->setVisible(false);
+    }
+    else if(fig20->collidesWithItem(enemigo2))
+    {
+        qDebug() << "Colisión entre fig20 y enemigo1";
+        bala2Existe=false;
+        enemigo2->setVisible(false);
+        bala2->setVisible(false);
+    }
+    else if(fig20->collidesWithItem(enemigo3))
+    {
+        qDebug() << "Colisión entre fig20 y enemigo1";
+        bala3Existe=false;
+        enemigo3->setVisible(false);
+        bala3->setVisible(false);
+    }
+    else if(fig20->collidesWithItem(enemigo4))
+    {
+        qDebug() << "Colisión entre fig20 y enemigo1";
+        bala4Existe=false;
+        enemigo4->setVisible(false);
+        bala4->setVisible(false);
+    }
+    else if(fig20->collidesWithItem(enemigo5))
+    {
+        qDebug() << "Colisión entre fig20 y enemigo1";
+        bala5Existe=false;
+        enemigo5->setVisible(false);
+        bala5->setVisible(false);
+    }
+    else if(fig20->collidesWithItem(enemigo6))
+    {
+        qDebug() << "Colisión entre fig20 y enemigo1";
+        bala6Existe=false;
+        enemigo6->setVisible(false);
+        bala6->setVisible(false);
+    }
+    else if(fig20->collidesWithItem(enemigo7))
+    {
+        qDebug() << "Colisión entre fig20 y enemigo1";
+        bala7Existe=false;
+        enemigo7->setVisible(false);
+        bala7->setVisible(false);
+    }
+    else if(fig20->collidesWithItem(enemigo8))
+    {
+        qDebug() << "Colisión entre fig20 y enemigo1";
+        bala8Existe=false;
+        enemigo8->setVisible(false);
+        bala8->setVisible(false);
+    }
+    else if(fig20->collidesWithItem(enemigo9))
+    {
+        qDebug() << "Colisión entre fig20 y enemigo1";
+        bala9Existe=false;
+        enemigo9->setVisible(false);
+        bala9->setVisible(false);
     }
 }

@@ -31,38 +31,17 @@ private slots:
     void updateMisil();
     void enableLaunch();
     void updatePositions();
-    void dispararEnemigo(QGraphicsPixmapItem* enemigo, QGraphicsPixmapItem* balaEnemigo);
-    void checkCollisions();
     void movOndular();
-    void resetInvulnerability();
-    void resetFig20();
+    void enemyShoot();
 private:
     Ui::MainWindow *ui;
     QGraphicsScene *scene1;
     QGraphicsScene *scene2;
     QGraphicsScene *scene3;
-    QGraphicsPixmapItem *fig1;
-    QGraphicsPixmapItem *fig2;
-    QGraphicsPixmapItem *fig3;
-    QGraphicsPixmapItem *fig4;
-    QGraphicsPixmapItem *fig5;
-    QGraphicsPixmapItem *fig6;
-    QGraphicsPixmapItem *fig7;
-    QGraphicsPixmapItem *fig8;
-    QGraphicsPixmapItem *fig9;
-    QGraphicsPixmapItem *fig10;
-    QGraphicsPixmapItem *fig11;
-    QGraphicsPixmapItem *fig12;
-    QGraphicsPixmapItem *fig13;
-    QGraphicsPixmapItem *fig14;
-    QGraphicsPixmapItem *fig15;
-    QGraphicsPixmapItem *fig16;
-    QGraphicsPixmapItem *fig17;
-    QGraphicsPixmapItem *fig18;
-    QGraphicsPixmapItem *fig19;
-    QGraphicsPixmapItem *fig20;
-    QGraphicsPixmapItem *fig21;
+    QGraphicsPixmapItem *fig1, *fig2, *fig3, *fig4, *fig5, *fig6, *fig7, *fig8, *fig9, *fig10, *fig11, *fig12, *fig13, *fig14, *fig15, *fig16, *fig17, *fig18, *fig19, *fig20, *fig21;
     QGraphicsPixmapItem *balaEnSprite;
+    QGraphicsPixmapItem *enemigo1, *enemigo2, *enemigo3, *enemigo4, *enemigo5, *enemigo6, *enemigo7, *enemigo8, *enemigo9;
+    QGraphicsPixmapItem *bala1, *bala2, *bala3, *bala4, *bala5, *bala6, *bala7, *bala8, *bala9;
     QTimer *misilTimer;
     QTimer *launchTimer;
     QTimer *moveTimer;
@@ -82,6 +61,7 @@ private:
     void resetScene1();
     void resetScene2();
     void resetScene3();
+    void checkCollisions();
     QGraphicsLineItem *l1, *l2;
     QList<QGraphicsRectItem*> obst;
     // Variables para movimiento circular
@@ -107,15 +87,12 @@ private:
 
     Jugador PP;
 
-    QList<QGraphicsPixmapItem*> enemigos;
-    QList<QGraphicsPixmapItem*> balasEnemigos;
     QList<QGraphicsRectItem*> muros;
-    QList<QTimer*> disparoTimers;
     QTimer *movOndularT;
-    bool isInvulnerable;
-    QTimer invulnerabilityTimer;
     QTimer fig20Timer;
-    bool isFig20Invulnerable;
+
+    QTimer *enemyShootTimer;
+    bool bala1Existe, bala2Existe, bala3Existe, bala4Existe, bala5Existe, bala6Existe, bala7Existe, bala8Existe, bala9Existe;
 
 
 };

@@ -157,7 +157,7 @@ bool PersonajeMov::isOnGround()
     QList<QGraphicsItem*> collidingItemsList = collidingItems();
     for (QGraphicsItem* item : collidingItemsList) {
         if (dynamic_cast<QGraphicsPixmapItem*>(item)) {
-            qDebug() << "On ground";
+            //qDebug() << "On ground";
             return true;
         }
     }
